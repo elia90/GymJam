@@ -107,6 +107,27 @@ async function loadHistory() {
   return data || [];
 }
 
+// ── Personal Records ───────────────────────────────
+async function savePersonalRecord(exerciseId, level) {
+  if (!_userId) return;
+  await db.from("personal_records").upsert({
+    user_id:     _userId,
+    exercise_id: exerciseId,
+    level,
+    achieved_at: new Date().toISOString(),
+  }, { onConflict: "user_id,exercise_id,level", ignoreDuplicates: true });
+}
+
+async function loadPersonalRecords() {
+  if (!_userId) return [];
+  const { data } = await db
+    .from("personal_records")
+    .select("*")
+    .eq("user_id", _userId)
+    .order("achieved_at", { ascending: false });
+  return data || [];
+}
+
 // ── Internal ───────────────────────────────────────
 async function _upsertProgress(exerciseId, p) {
   if (!_userId) return;

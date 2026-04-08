@@ -55,7 +55,10 @@
     <div class="section">
       <div class="section-title-row">
         <div class="section-title">תוכנית 3 ימים בשבוע</div>
-        <button class="history-btn" onclick="openHistory()">היסטוריה ›</button>
+        <div class="section-title-btns">
+          <button class="history-btn" onclick="openPRs()">🏆 שיאים</button>
+          <button class="history-btn" onclick="openHistory()">היסטוריה ›</button>
+        </div>
       </div>
       <div class="workout-cards" id="workout-cards"></div>
     </div>
@@ -166,6 +169,31 @@
 
       <button class="btn-primary" id="done-set-btn">סיימתי סט</button>
     </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PR CELEBRATION MODAL
+  ══════════════════════════════════════ -->
+  <div id="pr-modal" class="pr-modal" onclick="closePRModal()">
+    <div class="pr-modal-box" onclick="event.stopPropagation()">
+      <div class="pr-modal-emoji">🏆</div>
+      <div class="pr-modal-title">שיא אישי חדש!</div>
+      <div class="pr-modal-sub">עלית רמה בתרגילים הבאים</div>
+      <div class="pr-modal-list" id="pr-modal-list"></div>
+      <button class="btn-primary" onclick="closePRModal()" style="margin-top:8px">יאללה! 💪</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PR SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-prs" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="backToHome()">→</button>
+      <div class="header-title">שיאים אישיים 🏆</div>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="history-list" id="pr-list"></div>
   </div>
 
   <!-- ══════════════════════════════════════

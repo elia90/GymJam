@@ -352,7 +352,9 @@ function doneSet() {
     if (progress.completions >= SESSIONS_TO_LEVEL_UP && progress.level < maxLvl) {
       const oldLabel = ex.levels[progress.level].label;
       const newP     = applyLevelUp(ex.id, ex.defaultLevel);
-      state.levelUps.push({ exerciseName: ex.name, oldLabel, newLabel: ex.levels[newP.level].label });
+      const newLabel = ex.levels[newP.level].label;
+      state.levelUps.push({ exerciseId: ex.id, exerciseName: ex.name, oldLabel, newLabel, newLevel: newP.level });
+      savePersonalRecord(ex.id, newP.level);
     }
     state.exercisesDone.add(state.exerciseIndex);
     stopRestTimer();
@@ -440,6 +442,73 @@ function showDoneScreen() {
     });
   }
   goTo("done");
+  if (state.levelUps.length) setTimeout(showPRCelebration, 600);
+}
+
+function showPRCelebration() {
+  const modal = $("#pr-modal");
+  const list  = $("#pr-modal-list");
+  list.innerHTML = "";
+  state.levelUps.forEach(({ exerciseName, newLabel }) => {
+    const div = document.createElement("div");
+    div.className = "pr-modal-item";
+    div.innerHTML = `<span class="pr-modal-ex">${exerciseName}</span><span class="pr-modal-level">${newLabel}</span>`;
+    list.appendChild(div);
+  });
+  modal.classList.add("visible");
+}
+
+function closePRModal() {
+  $("#pr-modal")?.classList.remove("visible");
+}
+
+// ── PR SCREEN ──────────────────────────────────────
+async function openPRs() {
+  goTo("prs");
+  const list = $("#pr-list");
+  list.innerHTML = `<div class="history-loading">טוען...</div>`;
+
+  const records = await loadPersonalRecords();
+
+  if (!records.length) {
+    list.innerHTML = `<div class="history-empty">עוד אין שיאים אישיים<br>סיים 3 אימונים בתרגיל כלשהו 🏆</div>`;
+    return;
+  }
+
+  list.innerHTML = "";
+
+  // Group by exercise, show highest level per exercise first
+  const byExercise = {};
+  records.forEach(r => {
+    if (!byExercise[r.exercise_id] || r.level > byExercise[r.exercise_id].level) {
+      byExercise[r.exercise_id] = r;
+    }
+  });
+
+  // Find exercise data
+  const allExercises = WORKOUTS.flatMap(w => w.exercises);
+
+  Object.values(byExercise)
+    .sort((a, b) => new Date(b.achieved_at) - new Date(a.achieved_at))
+    .forEach(record => {
+      const ex = allExercises.find(e => e.id === record.exercise_id);
+      if (!ex) return;
+      const levelLabel = ex.levels[record.level]?.label || `רמה ${record.level + 1}`;
+      const isMax = record.level === ex.levels.length - 1;
+      const date  = new Date(record.achieved_at);
+
+      const card = document.createElement("div");
+      card.className = "pr-card";
+      card.innerHTML = `
+        <div class="pr-card-trophy">${isMax ? "🥇" : "🏆"}</div>
+        <div class="pr-card-info">
+          <div class="pr-card-name">${ex.name}</div>
+          <div class="pr-card-level">${levelLabel}${isMax ? " — רמה מקסימלית!" : ""}</div>
+          <div class="pr-card-date">${formatDate(date)}</div>
+        </div>
+      `;
+      list.appendChild(card);
+    });
 }
 
 // ── HISTORY SCREEN ────────────────────────────────

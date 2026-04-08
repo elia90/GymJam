@@ -959,6 +959,84 @@ body {
   color: #ff7a7a;
 }
 
+/* ===== PR CELEBRATION MODAL ===== */
+.pr-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.pr-modal.visible { display: flex; animation: fade-in 0.25s ease; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.pr-modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 24px 24px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pr-modal-emoji { font-size: 4rem; animation: bounce 0.6s ease; }
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  40%     { transform: translateY(-16px); }
+  70%     { transform: translateY(-8px); }
+}
+
+.pr-modal-title { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+.pr-modal-sub   { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+
+.pr-modal-list  { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+
+.pr-modal-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pr-modal-ex    { font-size: 0.9rem; font-weight: 600; }
+.pr-modal-level { font-size: 0.78rem; color: var(--accent2); font-weight: 600; }
+
+/* ===== PR SCREEN ===== */
+.section-title-btns { display: flex; gap: 8px; }
+
+.pr-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pr-card-trophy { font-size: 1.8rem; flex-shrink: 0; }
+
+.pr-card-name  { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
+.pr-card-level { font-size: 0.8rem; color: var(--accent2); font-weight: 600; margin-bottom: 2px; }
+.pr-card-date  { font-size: 0.75rem; color: var(--text-muted); }
+
 /* ===== WORKOUT TIMER ===== */
 .workout-bottom-row {
   display: flex;
