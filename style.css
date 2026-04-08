@@ -96,8 +96,8 @@
   --border:    #2e3347;
   --text:      #e8eaf0;
   --text-muted:#8b90a7;
-  --accent:    #6c63ff;
-  --accent2:   #a78bfa;
+  --accent:    #e8353a;
+  --accent2:   #78c238;
   --push:      #e74c3c;
   --pull:      #3498db;
   --legs:      #2ecc71;
@@ -267,7 +267,7 @@ body {
 }
 
 .badge-default { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
-.badge-accent  { background: rgba(108,99,255,.15); color: var(--accent2); border: 1px solid rgba(108,99,255,.3); }
+.badge-accent  { background: rgba(232,53,58,.15); color: var(--accent2); border: 1px solid rgba(232,53,58,.3); }
 
 .workout-card-arrow {
   color: var(--text-muted);
@@ -277,8 +277,8 @@ body {
 
 /* ===== TIPS CARD ===== */
 .tip-card {
-  background: rgba(108,99,255,.08);
-  border: 1px solid rgba(108,99,255,.2);
+  background: rgba(232,53,58,.08);
+  border: 1px solid rgba(232,53,58,.2);
   border-radius: var(--radius);
   padding: 16px;
 }
@@ -484,7 +484,7 @@ body {
 
 .set-dot.active {
   border-color: var(--accent);
-  background: rgba(108,99,255,.15);
+  background: rgba(232,53,58,.15);
   color: var(--accent2);
 }
 
@@ -640,9 +640,9 @@ body {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 20px;
-  background: rgba(108,99,255,.12);
+  background: rgba(232,53,58,.12);
   color: var(--accent2);
-  border: 1px solid rgba(108,99,255,.25);
+  border: 1px solid rgba(232,53,58,.25);
   white-space: nowrap;
 }
 
@@ -723,7 +723,7 @@ body {
 .level-adj-btn:hover:not(:disabled) {
   border-color: var(--accent2);
   color: var(--accent2);
-  background: rgba(108,99,255,.1);
+  background: rgba(232,53,58,.1);
 }
 
 .level-adj-btn:disabled {
@@ -854,8 +854,8 @@ body {
 .step-num {
   width: 24px; height: 24px;
   border-radius: 50%;
-  background: rgba(108,99,255,.15);
-  border: 1px solid rgba(108,99,255,.3);
+  background: rgba(232,53,58,.15);
+  border: 1px solid rgba(232,53,58,.3);
   color: var(--accent2);
   font-size: 0.72rem;
   font-weight: 700;
