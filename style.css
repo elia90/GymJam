@@ -959,6 +959,107 @@ body {
   color: #ff7a7a;
 }
 
+/* ===== HISTORY SCREEN ===== */
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-title-row .section-title { margin-bottom: 0; }
+
+.history-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.history-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.history-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.history-stat { text-align: center; }
+
+.history-stat-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.history-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.history-stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 20px;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.history-week-sep {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 12px 0 6px;
+}
+
+.history-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.history-card-emoji { font-size: 1.8rem; flex-shrink: 0; }
+
+.history-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.history-card-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.history-loading,
+.history-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 48px 20px;
+  line-height: 1.8;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 360px) {
   .home-title { font-size: 1.4rem; }

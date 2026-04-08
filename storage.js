@@ -84,14 +84,26 @@ function setExerciseLevel(exerciseId, newLevel) {
   _upsertProgress(exerciseId, p);
 }
 
-async function logWorkout(workoutId, completedExerciseIds) {
+async function logWorkout(workoutId, completedExerciseIds, durationMinutes) {
   if (!_userId) return;
   await db.from("workout_history").insert({
-    user_id:   _userId,
-    workout_id: workoutId,
-    exercises: completedExerciseIds,
+    user_id:          _userId,
+    workout_id:       workoutId,
+    exercises:        completedExerciseIds,
+    duration_minutes: durationMinutes || null,
   });
   _totalWorkouts++;
+}
+
+async function loadHistory() {
+  if (!_userId) return [];
+  const { data } = await db
+    .from("workout_history")
+    .select("*")
+    .eq("user_id", _userId)
+    .order("completed_at", { ascending: false })
+    .limit(50);
+  return data || [];
 }
 
 // ── Internal ───────────────────────────────────────

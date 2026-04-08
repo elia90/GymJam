@@ -385,7 +385,8 @@ function skipRest() {
 // ── DONE SCREEN ────────────────────────────────────
 function showDoneScreen() {
   const w = currentWorkout();
-  logWorkout(w.id, [...state.exercisesDone].map(i => w.exercises[i].id));
+  const duration = Math.round((Date.now() - state.workoutStartTime) / 60000) || 1;
+  logWorkout(w.id, [...state.exercisesDone].map(i => w.exercises[i].id), duration);
 
   $("#done-workout-name").textContent     = w.name;
   $("#done-exercises-count").textContent  = w.exercises.length;
@@ -407,6 +408,78 @@ function showDoneScreen() {
     });
   }
   goTo("done");
+}
+
+// ── HISTORY SCREEN ────────────────────────────────
+async function openHistory() {
+  goTo("history");
+  const list = $("#history-list");
+  list.innerHTML = `<div class="history-loading">טוען...</div>`;
+
+  const entries = await loadHistory();
+
+  if (!entries.length) {
+    list.innerHTML = `<div class="history-empty">עוד אין אימונים מוקלטים<br>סיים את האימון הראשון שלך 💪</div>`;
+    return;
+  }
+
+  // Weekly stats
+  const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay());
+  weekStart.setHours(0, 0, 0, 0);
+  const thisWeek = entries.filter(e => new Date(e.completed_at) >= weekStart).length;
+  $("#history-week-count").textContent = `${thisWeek} אימון${thisWeek === 1 ? "" : "ים"} השבוע`;
+  $("#history-total-count").textContent = `${entries.length} סה"כ`;
+
+  // Build list grouped by week
+  list.innerHTML = "";
+  let lastWeekLabel = null;
+
+  entries.forEach(entry => {
+    const date     = new Date(entry.completed_at);
+    const weekLabel = getWeekLabel(date);
+    const workout  = WORKOUTS.find(w => w.id === entry.workout_id);
+    if (!workout) return;
+
+    if (weekLabel !== lastWeekLabel) {
+      const sep = document.createElement("div");
+      sep.className = "history-week-sep";
+      sep.textContent = weekLabel;
+      list.appendChild(sep);
+      lastWeekLabel = weekLabel;
+    }
+
+    const card = document.createElement("div");
+    card.className = "history-card";
+    card.innerHTML = `
+      <div class="history-card-emoji">${workout.emoji}</div>
+      <div class="history-card-info">
+        <div class="history-card-name">${workout.name}</div>
+        <div class="history-card-meta">${formatDate(date)} · ${entry.exercises?.length || 0} תרגילים${entry.duration_minutes ? ` · ${entry.duration_minutes} דק׳` : ""}</div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function getWeekLabel(date) {
+  const now   = new Date();
+  const day   = 24 * 60 * 60 * 1000;
+  const diff  = Math.floor((now - date) / day);
+  if (diff < 7)  return "השבוע";
+  if (diff < 14) return "שבוע שעבר";
+  const week = Math.ceil(diff / 7);
+  return `לפני ${week} שבועות`;
+}
+
+function formatDate(date) {
+  const now  = new Date();
+  const diff = Math.floor((now - date) / (24 * 60 * 60 * 1000));
+  if (diff === 0) return "היום";
+  if (diff === 1) return "אתמול";
+  if (diff < 7)  return `לפני ${diff} ימים`;
+  return date.toLocaleDateString("he-IL", { day: "numeric", month: "short" });
 }
 
 // ── BACK BUTTONS ───────────────────────────────────

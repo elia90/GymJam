@@ -53,7 +53,10 @@
     </div>
 
     <div class="section">
-      <div class="section-title">תוכנית 3 ימים בשבוע</div>
+      <div class="section-title-row">
+        <div class="section-title">תוכנית 3 ימים בשבוע</div>
+        <button class="history-btn" onclick="openHistory()">היסטוריה ›</button>
+      </div>
       <div class="workout-cards" id="workout-cards"></div>
     </div>
 
@@ -160,6 +163,31 @@
 
       <button class="btn-primary" id="done-set-btn">סיימתי סט</button>
     </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       HISTORY SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-history" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="backToHome()">→</button>
+      <div class="header-title">היסטוריית אימונים</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <div class="history-stats-bar">
+      <div class="history-stat">
+        <div class="history-stat-num" id="history-week-count">—</div>
+        <div class="history-stat-label">השבוע</div>
+      </div>
+      <div class="history-stat-divider"></div>
+      <div class="history-stat">
+        <div class="history-stat-num" id="history-total-count">—</div>
+        <div class="history-stat-label">סה״כ אימונים</div>
+      </div>
+    </div>
+
+    <div class="history-list" id="history-list"></div>
   </div>
 
   <!-- ══════════════════════════════════════
