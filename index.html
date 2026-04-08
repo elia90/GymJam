@@ -95,7 +95,10 @@
       <div class="workout-progress-bar">
         <div class="workout-progress-fill" id="workout-progress-fill"></div>
       </div>
-      <div class="workout-progress-label" id="workout-progress-label">0 / 0 תרגילים הושלמו</div>
+      <div class="workout-bottom-row">
+        <div class="workout-progress-label" id="workout-progress-label">0 / 0 תרגילים הושלמו</div>
+        <div class="workout-timer" id="workout-timer">00:00</div>
+      </div>
     </div>
 
     <div class="exercise-list" id="exercise-list"></div>
@@ -207,6 +210,18 @@
         <div class="done-stat">
           <div class="done-stat-num" id="done-duration">—</div>
           <div class="done-stat-label">דקות</div>
+        </div>
+      </div>
+
+      <div class="done-times">
+        <div class="done-time-row">
+          <span class="done-time-label">התחלה</span>
+          <span class="done-time-val" id="done-start-time">—</span>
+        </div>
+        <div class="done-time-divider"></div>
+        <div class="done-time-row">
+          <span class="done-time-label">סיום</span>
+          <span class="done-time-val" id="done-end-time">—</span>
         </div>
       </div>
 

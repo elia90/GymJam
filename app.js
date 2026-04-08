@@ -17,7 +17,8 @@ let state = {
   levelUps: [],
 };
 
-let currentUser = null;
+let currentUser    = null;
+let workoutTimerInterval = null;
 
 // ── Helpers ────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -109,7 +110,32 @@ async function startWorkout(index) {
   await loadProgressForWorkout(currentWorkout());
 
   renderWorkoutScreen();
+  startWorkoutTimer();
   goTo("workout");
+}
+
+// ── WORKOUT TIMER ──────────────────────────────────
+function startWorkoutTimer() {
+  if (workoutTimerInterval) clearInterval(workoutTimerInterval);
+  updateWorkoutTimer();
+  workoutTimerInterval = setInterval(updateWorkoutTimer, 1000);
+}
+
+function updateWorkoutTimer() {
+  const el = $("#workout-timer");
+  if (!el || !state.workoutStartTime) return;
+  const elapsed = Math.floor((Date.now() - state.workoutStartTime) / 1000);
+  const m = Math.floor(elapsed / 60).toString().padStart(2, "0");
+  const s = (elapsed % 60).toString().padStart(2, "0");
+  el.textContent = `${m}:${s}`;
+}
+
+function stopWorkoutTimer() {
+  if (workoutTimerInterval) { clearInterval(workoutTimerInterval); workoutTimerInterval = null; }
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
 }
 
 // ── WORKOUT SCREEN ─────────────────────────────────
@@ -385,12 +411,18 @@ function skipRest() {
 // ── DONE SCREEN ────────────────────────────────────
 function showDoneScreen() {
   const w = currentWorkout();
-  const duration = Math.round((Date.now() - state.workoutStartTime) / 60000) || 1;
-  logWorkout(w.id, [...state.exercisesDone].map(i => w.exercises[i].id), duration);
+  const endTime  = new Date();
+  const startTime = new Date(state.workoutStartTime);
+  const duration = Math.round((endTime - startTime) / 60000) || 1;
+  logWorkout(w.id, [...state.exercisesDone].map(i => w.exercises[i].id), duration, startTime.toISOString());
 
-  $("#done-workout-name").textContent     = w.name;
-  $("#done-exercises-count").textContent  = w.exercises.length;
-  $("#done-duration").textContent         = Math.round((Date.now() - state.workoutStartTime) / 60000) || "< 1";
+  stopWorkoutTimer();
+
+  $("#done-workout-name").textContent    = w.name;
+  $("#done-exercises-count").textContent = w.exercises.length;
+  $("#done-duration").textContent        = duration;
+  $("#done-start-time").textContent      = formatTime(startTime);
+  $("#done-end-time").textContent        = formatTime(endTime);
 
   const container = $("#levelup-container");
   if (!state.levelUps.length) {
@@ -452,11 +484,16 @@ async function openHistory() {
 
     const card = document.createElement("div");
     card.className = "history-card";
+    const startStr = entry.started_at ? formatTime(new Date(entry.started_at)) : null;
+    const endStr   = formatTime(date);
+    const timeRange = startStr ? `${startStr} – ${endStr}` : endStr;
+
     card.innerHTML = `
       <div class="history-card-emoji">${workout.emoji}</div>
       <div class="history-card-info">
         <div class="history-card-name">${workout.name}</div>
         <div class="history-card-meta">${formatDate(date)} · ${entry.exercises?.length || 0} תרגילים${entry.duration_minutes ? ` · ${entry.duration_minutes} דק׳` : ""}</div>
+        <div class="history-card-time">🕐 ${timeRange}</div>
       </div>
     `;
     list.appendChild(card);
@@ -485,6 +522,7 @@ function formatDate(date) {
 // ── BACK BUTTONS ───────────────────────────────────
 async function backToHome() {
   stopRestTimer();
+  stopWorkoutTimer();
   await renderHome();
   goTo("home");
 }

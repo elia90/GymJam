@@ -84,13 +84,14 @@ function setExerciseLevel(exerciseId, newLevel) {
   _upsertProgress(exerciseId, p);
 }
 
-async function logWorkout(workoutId, completedExerciseIds, durationMinutes) {
+async function logWorkout(workoutId, completedExerciseIds, durationMinutes, startedAt) {
   if (!_userId) return;
   await db.from("workout_history").insert({
     user_id:          _userId,
     workout_id:       workoutId,
     exercises:        completedExerciseIds,
     duration_minutes: durationMinutes || null,
+    started_at:       startedAt || null,
   });
   _totalWorkouts++;
 }
