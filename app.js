@@ -9,14 +9,15 @@ let state = {
   exerciseIndex: null,
   currentSet: 1,
   completedSets: [],
-  exercisesDone: new Set(),   // indices of fully completed exercises
+  exercisesDone: new Set(),
   restTimer: null,
   restRemaining: 0,
   restTotal: 0,
   workoutStartTime: null,
-  // level-up tracking for current session
-  levelUps: [],               // { exerciseName, oldLabel, newLabel }
+  levelUps: [],
 };
+
+let currentUser = null;
 
 // ── Helpers ────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -27,15 +28,11 @@ function currentExercise() {
   return w ? w.exercises[state.exerciseIndex] : null;
 }
 
-// Returns the active level index for an exercise (from storage or default)
 function getLevel(ex) {
   return getExerciseProgress(ex.id, ex.defaultLevel).level;
 }
-
-// Returns the level data object { label, sets, reps } for current level
 function getLevelData(ex) {
-  const lvl = getLevel(ex);
-  return ex.levels[lvl];
+  return ex.levels[getLevel(ex)];
 }
 
 // ── Navigation ─────────────────────────────────────
@@ -46,19 +43,42 @@ function goTo(screen) {
   state.screen = screen;
 }
 
+// ── AUTH ───────────────────────────────────────────
+async function signInWithGoogle() {
+  const { error } = await db.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: window.location.origin + window.location.pathname },
+  });
+  if (error) alert("שגיאה בהתחברות: " + error.message);
+}
+
+async function signOut() {
+  await db.auth.signOut();
+}
+
+function renderUserInfo(user) {
+  const el = $("#user-info");
+  if (!el) return;
+  const name = user.user_metadata?.full_name || user.email || "משתמש";
+  const avatar = user.user_metadata?.avatar_url;
+  el.innerHTML = avatar
+    ? `<img src="${avatar}" class="user-avatar" alt="${name}" /><span class="user-name">${name}</span>`
+    : `<span class="user-name">${name}</span>`;
+}
+
 // ── HOME SCREEN ────────────────────────────────────
-function renderHome() {
-  const container = $("#workout-cards");
-  container.innerHTML = "";
+async function renderHome() {
+  await loadTotalWorkouts();
   const total = getTotalWorkouts();
   $("#home-workouts-count").textContent = total > 0
     ? `${total} אימון${total === 1 ? "" : "ים"} הושלמו`
     : "בוא נתחיל!";
 
+  const container = $("#workout-cards");
+  container.innerHTML = "";
+
   WORKOUTS.forEach((w, i) => {
     const colorClass = ["push", "pull", "legs"][i];
-    const exCount = w.exercises.length;
-
     const card = document.createElement("div");
     card.className = `workout-card ${colorClass}`;
     card.innerHTML = `
@@ -67,8 +87,8 @@ function renderHome() {
         <div class="workout-card-name">${w.name}</div>
         <div class="workout-card-desc">${w.description}</div>
         <div class="workout-card-meta">
-          <span class="badge badge-default">${exCount} תרגילים</span>
-          <span class="badge badge-accent">~${Math.round(exCount * 5)} דקות</span>
+          <span class="badge badge-default">${w.exercises.length} תרגילים</span>
+          <span class="badge badge-accent">~${Math.round(w.exercises.length * 5)} דקות</span>
         </div>
       </div>
       <div class="workout-card-arrow">‹</div>
@@ -79,11 +99,14 @@ function renderHome() {
 }
 
 // ── START WORKOUT ──────────────────────────────────
-function startWorkout(index) {
+async function startWorkout(index) {
   state.workoutIndex = index;
   state.exercisesDone = new Set();
   state.workoutStartTime = Date.now();
   state.levelUps = [];
+
+  // Load progress from Supabase into cache
+  await loadProgressForWorkout(currentWorkout());
 
   renderWorkoutScreen();
   goTo("workout");
@@ -96,7 +119,7 @@ function renderWorkoutScreen() {
 
   $("#workout-emoji").textContent = w.emoji;
   $("#workout-title").textContent = w.name;
-  $("#workout-desc").textContent = w.description;
+  $("#workout-desc").textContent  = w.description;
 
   const colorMap = { push: "var(--push)", pull: "var(--pull)", legs: "var(--legs)" };
   $("#workout-progress-fill").style.background = colorMap[colorClass] || "var(--accent)";
@@ -107,16 +130,11 @@ function renderWorkoutScreen() {
 
 function updateWorkoutProgress() {
   const w = currentWorkout();
-  const done = state.exercisesDone.size;
+  const done  = state.exercisesDone.size;
   const total = w.exercises.length;
-  const pct = total ? (done / total) * 100 : 0;
-
-  $("#workout-progress-fill").style.width = pct + "%";
+  $("#workout-progress-fill").style.width = (total ? (done / total) * 100 : 0) + "%";
   $("#workout-progress-label").textContent = `${done} / ${total} תרגילים הושלמו`;
-
-  if (done === total && total > 0) {
-    setTimeout(showDoneScreen, 600);
-  }
+  if (done === total && total > 0) setTimeout(showDoneScreen, 600);
 }
 
 function renderExerciseList() {
@@ -125,12 +143,12 @@ function renderExerciseList() {
   container.innerHTML = "";
 
   w.exercises.forEach((ex, i) => {
-    const done = state.exercisesDone.has(i);
-    const lvlData = getLevelData(ex);
-    const lvlIdx  = getLevel(ex);
-    const isMax   = lvlIdx === ex.levels.length - 1;
+    const done     = state.exercisesDone.has(i);
+    const lvlData  = getLevelData(ex);
+    const lvlIdx   = getLevel(ex);
+    const isMax    = lvlIdx === ex.levels.length - 1;
     const { completions } = getExerciseProgress(ex.id, ex.defaultLevel);
-    const readyUp = isReadyToLevelUp(ex.id, ex.defaultLevel, ex.levels.length - 1);
+    const readyUp  = isReadyToLevelUp(ex.id, ex.defaultLevel, ex.levels.length - 1);
 
     const item = document.createElement("div");
     item.className = "exercise-item" + (done ? " done" : "");
@@ -154,23 +172,19 @@ function renderExerciseList() {
   });
 }
 
-function renderLevelDots(currentLvl, totalLevels, completions) {
-  // Show progress pips: filled = completed sessions at this level, max = SESSIONS_TO_LEVEL_UP
+function renderLevelDots(lvlIdx, totalLevels, completions) {
   const pips = Array.from({ length: SESSIONS_TO_LEVEL_UP }, (_, i) =>
     `<span class="progress-pip${i < completions ? " filled" : ""}"></span>`
   ).join("");
-  return `<span class="progress-pips">${pips}</span><span class="level-count">רמה ${currentLvl + 1}/${totalLevels}</span>`;
+  return `<span class="progress-pips">${pips}</span><span class="level-count">רמה ${lvlIdx + 1}/${totalLevels}</span>`;
 }
 
 // ── OPEN EXERCISE ──────────────────────────────────
 function openExercise(index) {
   state.exerciseIndex = index;
-  const ex = currentExercise();
-  const lvlData = getLevelData(ex);
-
-  state.currentSet = 1;
+  const lvlData = getLevelData(currentExercise());
+  state.currentSet   = 1;
   state.completedSets = new Array(lvlData.sets).fill(false);
-
   stopRestTimer();
   renderActiveScreen();
   goTo("active");
@@ -178,17 +192,17 @@ function openExercise(index) {
 
 // ── ACTIVE EXERCISE SCREEN ─────────────────────────
 function renderActiveScreen() {
-  const ex = currentExercise();
+  const ex      = currentExercise();
   const lvlData = getLevelData(ex);
   const lvlIdx  = getLevel(ex);
 
-  $("#active-ex-name").textContent = ex.name;
-  $("#active-muscles").textContent = ex.muscles;
-  $("#active-tip-text").textContent = ex.tips;
-  $("#active-reps").textContent = lvlData.reps;
+  $("#active-ex-name").textContent    = ex.name;
+  $("#active-muscles").textContent    = ex.muscles;
+  $("#active-tip-text").textContent   = ex.tips;
+  $("#active-reps").textContent       = lvlData.reps;
   $("#active-reps-label").textContent = isNaN(lvlData.reps) ? "" : "חזרות";
   $("#active-level-badge").textContent = lvlData.label;
-  $("#active-level-num").textContent = `רמה ${lvlIdx + 1} מתוך ${ex.levels.length}`;
+  $("#active-level-num").textContent   = `רמה ${lvlIdx + 1} מתוך ${ex.levels.length}`;
   $("#level-down-btn").disabled = lvlIdx === 0;
   $("#level-up-btn").disabled   = lvlIdx === ex.levels.length - 1;
 
@@ -197,6 +211,23 @@ function renderActiveScreen() {
   renderSetDots();
   hideRestTimer();
   updateDoneButton();
+}
+
+// ── MANUAL LEVEL ADJUSTMENT ────────────────────────
+function adjustLevel(direction) {
+  const ex      = currentExercise();
+  const current = getExerciseProgress(ex.id, ex.defaultLevel);
+  const newLevel = current.level + direction;
+  if (newLevel < 0 || newLevel >= ex.levels.length) return;
+
+  setExerciseLevel(ex.id, newLevel);
+
+  const lvlData = ex.levels[newLevel];
+  state.completedSets = new Array(lvlData.sets).fill(false);
+  state.currentSet = 1;
+  stopRestTimer();
+  hideRestTimer();
+  renderActiveScreen();
 }
 
 // ── INSTRUCTIONS PANEL ──────────────────────────────
@@ -211,10 +242,10 @@ function renderInstructions(ex) {
   });
 
   const mistakesEl = $("#instructions-mistakes");
-  if (ex.commonMistakes && ex.commonMistakes.length) {
+  if (ex.commonMistakes?.length) {
     mistakesEl.style.display = "";
     mistakesEl.innerHTML = `<div class="instructions-mistakes-title">טעויות נפוצות</div>`;
-    ex.commonMistakes.forEach((m) => {
+    ex.commonMistakes.forEach(m => {
       const div = document.createElement("div");
       div.className = "mistake-item";
       div.textContent = m;
@@ -226,8 +257,7 @@ function renderInstructions(ex) {
 
   const videoLink = $("#instructions-video-link");
   if (ex.videoSearch) {
-    const query = encodeURIComponent(ex.videoSearch);
-    videoLink.href = `https://www.youtube.com/results?search_query=${query}`;
+    videoLink.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(ex.videoSearch)}`;
     videoLink.style.display = "";
   } else {
     videoLink.style.display = "none";
@@ -238,13 +268,8 @@ function toggleInstructions() {
   const panel  = $("#instructions-panel");
   const toggle = $("#instructions-toggle");
   const isOpen = panel.classList.contains("open");
-  if (isOpen) {
-    panel.classList.remove("open");
-    toggle.classList.remove("open");
-  } else {
-    panel.classList.add("open");
-    toggle.classList.add("open");
-  }
+  panel.classList.toggle("open", !isOpen);
+  toggle.classList.toggle("open", !isOpen);
 }
 
 function closeInstructions() {
@@ -254,68 +279,55 @@ function closeInstructions() {
 
 // ── SET TRACKER ────────────────────────────────────
 function renderSetDots() {
-  const ex = currentExercise();
-  const lvlData = getLevelData(ex);
+  const lvlData   = getLevelData(currentExercise());
   const container = $("#set-dots");
   container.innerHTML = "";
 
   for (let i = 0; i < lvlData.sets; i++) {
     const dot = document.createElement("div");
-    const isCurrent = i + 1 === state.currentSet && !state.completedSets[i];
-    const isDone    = state.completedSets[i];
-
     dot.className = "set-dot" +
-      (isCurrent ? " active" : "") +
-      (isDone    ? " done"   : "");
+      (i + 1 === state.currentSet && !state.completedSets[i] ? " active" : "") +
+      (state.completedSets[i] ? " done" : "");
     dot.textContent = i + 1;
     dot.addEventListener("click", () => {
-      if (!isDone) {
-        state.currentSet = i + 1;
-        renderSetDots();
-      }
+      if (!state.completedSets[i]) { state.currentSet = i + 1; renderSetDots(); }
     });
     container.appendChild(dot);
   }
 }
 
 function updateDoneButton() {
-  const ex = currentExercise();
+  const ex      = currentExercise();
   const lvlData = getLevelData(ex);
   const allDone = state.completedSets.every(Boolean);
   const btn = $("#done-set-btn");
 
   if (allDone) {
     btn.textContent = "סיימתי את התרגיל ✓";
-    btn.disabled = false;
   } else {
     const setIdx = state.currentSet - 1;
     if (state.completedSets[setIdx]) {
-      const next = state.completedSets.findIndex((d) => !d);
+      const next = state.completedSets.findIndex(d => !d);
       state.currentSet = next >= 0 ? next + 1 : state.currentSet;
     }
     btn.textContent = `סיימתי סט ${state.currentSet} מתוך ${lvlData.sets}`;
-    btn.disabled = false;
   }
+  btn.disabled = false;
 }
 
 // ── DONE SET ───────────────────────────────────────
 function doneSet() {
-  const ex = currentExercise();
+  const ex      = currentExercise();
   const allDone = state.completedSets.every(Boolean);
 
   if (allDone) {
-    // Record completion for progression tracking
     const progress = recordExerciseCompletion(ex.id, ex.defaultLevel);
-    const maxLvl = ex.levels.length - 1;
-
-    // Check if this completion triggers a level-up
+    const maxLvl   = ex.levels.length - 1;
     if (progress.completions >= SESSIONS_TO_LEVEL_UP && progress.level < maxLvl) {
       const oldLabel = ex.levels[progress.level].label;
-      const newProgress = applyLevelUp(ex.id, ex.defaultLevel);
-      const newLabel = ex.levels[newProgress.level].label;
-      state.levelUps.push({ exerciseName: ex.name, oldLabel, newLabel });
+      const newP     = applyLevelUp(ex.id, ex.defaultLevel);
+      state.levelUps.push({ exerciseName: ex.name, oldLabel, newLabel: ex.levels[newP.level].label });
     }
-
     state.exercisesDone.add(state.exerciseIndex);
     stopRestTimer();
     updateWorkoutProgress();
@@ -324,15 +336,13 @@ function doneSet() {
     return;
   }
 
-  const setIdx = state.currentSet - 1;
+  const setIdx  = state.currentSet - 1;
   state.completedSets[setIdx] = true;
-
   const nextUndone = state.completedSets.findIndex((d, i) => !d && i > setIdx);
   const anyUndone  = state.completedSets.findIndex(d => !d);
 
   renderSetDots();
   updateDoneButton();
-
   if (anyUndone >= 0) {
     startRestTimer(ex.rest);
     state.currentSet = (nextUndone >= 0 ? nextUndone : anyUndone) + 1;
@@ -342,19 +352,12 @@ function doneSet() {
 // ── REST TIMER ─────────────────────────────────────
 function startRestTimer(seconds) {
   stopRestTimer();
-  state.restTotal     = seconds;
-  state.restRemaining = seconds;
+  state.restTotal = state.restRemaining = seconds;
   showRestTimer(seconds, seconds);
-
   state.restTimer = setInterval(() => {
     state.restRemaining--;
     showRestTimer(state.restRemaining, state.restTotal);
-    if (state.restRemaining <= 0) {
-      stopRestTimer();
-      hideRestTimer();
-      renderSetDots();
-      updateDoneButton();
-    }
+    if (state.restRemaining <= 0) { stopRestTimer(); hideRestTimer(); renderSetDots(); updateDoneButton(); }
   }, 1000);
 }
 
@@ -363,11 +366,9 @@ function stopRestTimer() {
 }
 
 function showRestTimer(remaining, total) {
-  const el = $("#rest-timer");
-  el.classList.add("visible");
+  $("#rest-timer").classList.add("visible");
   $("#rest-count").textContent = remaining + "s";
-  const pct = total > 0 ? (remaining / total) * 100 : 0;
-  $("#rest-fill").style.width = pct + "%";
+  $("#rest-fill").style.width  = (total > 0 ? (remaining / total) * 100 : 0) + "%";
 }
 
 function hideRestTimer() {
@@ -384,67 +385,34 @@ function skipRest() {
 // ── DONE SCREEN ────────────────────────────────────
 function showDoneScreen() {
   const w = currentWorkout();
-  const elapsed = Math.round((Date.now() - state.workoutStartTime) / 60000);
-
-  // Log to history
   logWorkout(w.id, [...state.exercisesDone].map(i => w.exercises[i].id));
 
-  $("#done-workout-name").textContent = w.name;
-  $("#done-exercises-count").textContent = w.exercises.length;
-  $("#done-duration").textContent = elapsed || "< 1";
+  $("#done-workout-name").textContent     = w.name;
+  $("#done-exercises-count").textContent  = w.exercises.length;
+  $("#done-duration").textContent         = Math.round((Date.now() - state.workoutStartTime) / 60000) || "< 1";
 
-  renderLevelUps();
-  goTo("done");
-}
-
-function renderLevelUps() {
   const container = $("#levelup-container");
   if (!state.levelUps.length) {
     container.style.display = "none";
-    return;
+  } else {
+    container.style.display = "";
+    const list = $("#levelup-list");
+    list.innerHTML = "";
+    state.levelUps.forEach(({ exerciseName, oldLabel, newLabel }) => {
+      const item = document.createElement("div");
+      item.className = "levelup-item";
+      item.innerHTML = `<span class="levelup-name">${exerciseName}</span>
+        <span class="levelup-arrow">${oldLabel} → <strong>${newLabel}</strong></span>`;
+      list.appendChild(item);
+    });
   }
-  container.style.display = "";
-  const list = container.querySelector("#levelup-list");
-  list.innerHTML = "";
-  state.levelUps.forEach(({ exerciseName, oldLabel, newLabel }) => {
-    const item = document.createElement("div");
-    item.className = "levelup-item";
-    item.innerHTML = `
-      <span class="levelup-name">${exerciseName}</span>
-      <span class="levelup-arrow">${oldLabel} → <strong>${newLabel}</strong></span>
-    `;
-    list.appendChild(item);
-  });
-}
-
-// ── MANUAL LEVEL ADJUSTMENT ────────────────────────
-function adjustLevel(direction) {
-  const ex = currentExercise();
-  const current = getExerciseProgress(ex.id, ex.defaultLevel);
-  const newLevel = current.level + direction;
-
-  if (newLevel < 0 || newLevel >= ex.levels.length) return;
-
-  // Save new level, reset completions counter
-  const d = JSON.parse(localStorage.getItem("cali_progress") || "{}");
-  if (!d.exercises) d.exercises = {};
-  d.exercises[ex.id] = { level: newLevel, completions: 0 };
-  localStorage.setItem("cali_progress", JSON.stringify(d));
-
-  // Reset sets for new level
-  const lvlData = ex.levels[newLevel];
-  state.completedSets = new Array(lvlData.sets).fill(false);
-  state.currentSet = 1;
-  stopRestTimer();
-  hideRestTimer();
-
-  renderActiveScreen();
+  goTo("done");
 }
 
 // ── BACK BUTTONS ───────────────────────────────────
-function backToHome() {
+async function backToHome() {
   stopRestTimer();
-  renderHome();
+  await renderHome();
   goTo("home");
 }
 
@@ -455,9 +423,21 @@ function backToWorkout() {
 
 // ── INIT ───────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  renderHome();
-  goTo("home");
-
   document.getElementById("done-set-btn")?.addEventListener("click", doneSet);
   document.getElementById("skip-rest-btn")?.addEventListener("click", skipRest);
+
+  // Auth state listener — drives the whole app
+  db.auth.onAuthStateChange(async (_event, session) => {
+    if (session?.user) {
+      currentUser = session.user;
+      setCurrentUser(currentUser.id);
+      renderUserInfo(currentUser);
+      await renderHome();
+      goTo("home");
+    } else {
+      currentUser = null;
+      setCurrentUser(null);
+      goTo("login");
+    }
+  });
 });
