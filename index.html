@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Calisthenics Coach</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════
+       HOME SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-home" class="screen">
+    <div class="home-hero">
+      <div class="home-greeting">שלום 👋</div>
+      <div class="home-title">Calisthenics Coach</div>
+      <div class="home-subtitle" id="home-workouts-count">בוא נתחיל!</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">תוכנית 3 ימים בשבוע</div>
+      <div class="workout-cards" id="workout-cards"></div>
+    </div>
+
+    <div class="section">
+      <div class="tip-card">
+        <div class="tip-card-title">💡 טיפים לתוכנית</div>
+        <ul class="tip-card-list">
+          <li>הסדר המומלץ: A → B → C → מנוחה → A...</li>
+          <li>לפחות יום מנוחה בין אימונים</li>
+          <li>חם לפני כל אימון — 5 דקות קפיצות / ריצה קלה</li>
+          <li>שתה מים לפני, בזמן ואחרי</li>
+          <li>התקדמות מגיעה אחרי 3 אימונים בכל רמה</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WORKOUT SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-workout" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="backToHome()">→</button>
+      <div class="header-title">האימון שלך</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <div class="workout-header">
+      <div class="workout-header-top">
+        <div class="workout-emoji" id="workout-emoji"></div>
+        <div class="workout-info">
+          <h2 id="workout-title"></h2>
+          <p  id="workout-desc"></p>
+        </div>
+      </div>
+      <div class="workout-progress-bar">
+        <div class="workout-progress-fill" id="workout-progress-fill"></div>
+      </div>
+      <div class="workout-progress-label" id="workout-progress-label">0 / 0 תרגילים הושלמו</div>
+    </div>
+
+    <div class="exercise-list" id="exercise-list"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       ACTIVE EXERCISE SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-active" class="screen">
+    <div class="header active-header">
+      <button class="header-back" onclick="backToWorkout()">→</button>
+      <div class="header-title">תרגיל</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <div class="active-body">
+      <div class="active-exercise-name" id="active-ex-name"></div>
+      <div class="active-muscles" id="active-muscles"></div>
+
+      <!-- Current level indicator -->
+      <div class="active-level-row">
+        <button class="level-adj-btn" onclick="adjustLevel(-1)" id="level-down-btn" title="הורד רמה">▼</button>
+        <div class="active-level-center">
+          <span class="level-badge" id="active-level-badge"></span>
+          <span class="active-level-num" id="active-level-num"></span>
+        </div>
+        <button class="level-adj-btn" onclick="adjustLevel(1)" id="level-up-btn" title="העלה רמה">▲</button>
+      </div>
+
+      <div class="tip-box">
+        <span class="tip-box-icon">💡</span>
+        <span id="active-tip-text"></span>
+      </div>
+
+      <!-- Instructions toggle -->
+      <button class="instructions-toggle" id="instructions-toggle" onclick="toggleInstructions()">
+        <span class="instructions-toggle-icon" id="instructions-icon">▾</span>
+        <span>איך עושים את זה?</span>
+        <span class="instructions-toggle-right" id="instructions-video-btn"></span>
+      </button>
+
+      <div class="instructions-panel" id="instructions-panel">
+        <div class="instructions-steps" id="instructions-steps"></div>
+        <div class="instructions-mistakes" id="instructions-mistakes"></div>
+        <a class="instructions-video-link" id="instructions-video-link" href="#" target="_blank" rel="noopener">
+          ▶ צפה בהדגמת וידאו ב-YouTube
+        </a>
+      </div>
+
+      <!-- Reps display -->
+      <div class="reps-display">
+        <div class="reps-number" id="active-reps"></div>
+        <div class="reps-label"  id="active-reps-label">חזרות</div>
+      </div>
+
+      <!-- Set dots -->
+      <div class="set-tracker">
+        <div class="set-tracker-title">סטים</div>
+        <div class="set-dots" id="set-dots"></div>
+      </div>
+
+      <!-- Rest timer -->
+      <div class="rest-timer" id="rest-timer">
+        <div class="rest-timer-label">⏳ מנוחה</div>
+        <div class="rest-timer-count" id="rest-count">0s</div>
+        <div class="rest-timer-bar">
+          <div class="rest-timer-fill" id="rest-fill"></div>
+        </div>
+        <button class="rest-skip-btn" id="skip-rest-btn">דלג על המנוחה</button>
+      </div>
+
+      <!-- CTA -->
+      <button class="btn-primary" id="done-set-btn">סיימתי סט</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       DONE SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-done" class="screen">
+    <div class="done-screen">
+      <div class="done-emoji">🎉</div>
+      <div class="done-title">כל הכבוד!</div>
+      <div class="done-sub" id="done-workout-name">סיימת את האימון</div>
+
+      <div class="done-stats">
+        <div class="done-stat">
+          <div class="done-stat-num" id="done-exercises-count">—</div>
+          <div class="done-stat-label">תרגילים</div>
+        </div>
+        <div class="done-stat">
+          <div class="done-stat-num" id="done-duration">—</div>
+          <div class="done-stat-label">דקות</div>
+        </div>
+      </div>
+
+      <!-- Level-up notifications -->
+      <div class="levelup-container" id="levelup-container" style="display:none">
+        <div class="levelup-header">⬆ שדרוגים באימון הזה</div>
+        <div class="levelup-list" id="levelup-list"></div>
+      </div>
+
+      <button class="btn-primary" onclick="backToHome()" style="max-width:280px">חזרה לתפריט</button>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script src="data.js"></script>
+<script src="storage.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
