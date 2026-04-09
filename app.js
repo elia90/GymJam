@@ -206,11 +206,13 @@ function finishWarmup() {
 
 function skipWarmup() {
   clearWarmupTimer();
-  if (warmupState.workoutIndex !== null) {
-    doStartWorkout(warmupState.workoutIndex);
-  } else {
-    backToHome();
-  }
+  doStartWorkout(warmupState.workoutIndex);
+}
+
+function backFromWarmup() {
+  clearWarmupTimer();
+  warmupState.workoutIndex = null;
+  backToHome();
 }
 
 function clearWarmupTimer() {
