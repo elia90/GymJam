@@ -268,9 +268,27 @@ body {
 .workout-card:hover { background: var(--surface2); transform: translateX(-2px); }
 .workout-card:active { transform: scale(0.98); }
 
-.workout-card-emoji {
-  font-size: 2.2rem;
+.workout-card-letter {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
   flex-shrink: 0;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.workout-card-letter.push { background: var(--push); }
+.workout-card-letter.pull { background: var(--pull); }
+.workout-card-letter.legs { background: var(--legs); }
+.workout-card-letter.sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 1rem;
 }
 
 .workout-card-info { flex: 1; }
@@ -1322,7 +1340,6 @@ body {
   gap: 14px;
 }
 
-.history-card-emoji { font-size: 1.8rem; flex-shrink: 0; }
 
 .history-card-name {
   font-size: 0.95rem;

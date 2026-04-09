@@ -86,10 +86,11 @@ async function renderHome() {
 
   WORKOUTS.forEach((w, i) => {
     const colorClass = ["push", "pull", "legs"][i];
+    const letters = ["A", "B", "C"];
     const card = document.createElement("div");
     card.className = `workout-card ${colorClass}`;
     card.innerHTML = `
-      <div class="workout-card-emoji">${w.emoji}</div>
+      <div class="workout-card-letter ${colorClass}">${letters[i]}</div>
       <div class="workout-card-info">
         <div class="workout-card-name">${w.name}</div>
         <div class="workout-card-desc">${w.description}</div>
@@ -680,8 +681,11 @@ async function openHistory() {
     const endStr   = formatTime(date);
     const timeRange = startStr ? `${startStr} – ${endStr}` : endStr;
 
+    const wIdx = WORKOUTS.indexOf(workout);
+    const wLetter = ["A","B","C"][wIdx] || "?";
+    const wColor  = ["push","pull","legs"][wIdx] || "push";
     card.innerHTML = `
-      <div class="history-card-emoji">${workout.emoji}</div>
+      <div class="workout-card-letter ${wColor} sm">${wLetter}</div>
       <div class="history-card-info">
         <div class="history-card-name">${workout.name}</div>
         <div class="history-card-meta">${formatDate(date)} · ${entry.exercises?.length || 0} תרגילים${entry.duration_minutes ? ` · ${entry.duration_minutes} דק׳` : ""}</div>
