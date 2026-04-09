@@ -327,6 +327,30 @@ body {
   flex-shrink: 0;
 }
 
+/* ===== DAILY TIP ===== */
+.daily-tip-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-right: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+}
+
+.daily-tip-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.daily-tip-text {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
 /* ===== TIPS CARD ===== */
 .tip-card {
   background: rgba(70,130,180,.08);
