@@ -731,12 +731,25 @@ function backToWorkout() {
 }
 
 // ── INIT ───────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("done-set-btn")?.addEventListener("click", doneSet);
   document.getElementById("skip-rest-btn")?.addEventListener("click", skipRest);
 
-  // Auth state listener — drives the whole app
-  db.auth.onAuthStateChange(async (_event, session) => {
+  // Check session immediately on load — no waiting for event
+  const { data: { session: initSession } } = await db.auth.getSession();
+  if (initSession?.user) {
+    currentUser = initSession.user;
+    setCurrentUser(currentUser.id);
+    renderUserInfo(currentUser);
+    await renderHome();
+    goTo("home");
+  } else {
+    goTo("login");
+  }
+
+  // Listen for future auth changes (sign in / sign out)
+  db.auth.onAuthStateChange(async (event, session) => {
+    if (event === "INITIAL_SESSION") return; // already handled above
     if (session?.user) {
       currentUser = session.user;
       setCurrentUser(currentUser.id);
