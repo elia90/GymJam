@@ -6,14 +6,15 @@
 
 const SESSIONS_TO_LEVEL_UP = 3;
 
-let _userId       = null;
-let _cache        = {};   // { exerciseId: { level, completions } }
+let _userId        = null;
+let _cache         = {};   // { exerciseId: { level, completions } }
 let _totalWorkouts = 0;
+let _userProfile   = null;
 
 // ── Auth ───────────────────────────────────────────
 function setCurrentUser(userId) {
   _userId = userId;
-  if (!userId) { _cache = {}; _totalWorkouts = 0; }
+  if (!userId) { _cache = {}; _totalWorkouts = 0; _userProfile = null; }
 }
 
 // ── Load progress for a full workout at once ───────
@@ -29,9 +30,13 @@ async function loadProgressForWorkout(workout) {
 
   workout.exercises.forEach(ex => {
     const row = data?.find(d => d.exercise_id === ex.id);
+    const startLevel =
+      _userProfile?.fitness_level === "beginner"  ? 1 :
+      _userProfile?.fitness_level === "advanced"  ? Math.min(ex.defaultLevel + 1, ex.levels.length - 1) :
+      ex.defaultLevel;
     _cache[ex.id] = row
       ? { level: row.level, completions: row.completions }
-      : { level: ex.defaultLevel, completions: 0 };
+      : { level: startLevel, completions: 0 };
   });
 }
 
@@ -126,6 +131,25 @@ async function loadPersonalRecords() {
     .eq("user_id", _userId)
     .order("achieved_at", { ascending: false });
   return data || [];
+}
+
+// ── User Profile / Onboarding ─────────────────────
+async function loadUserProfile() {
+  if (!_userId) return null;
+  const { data } = await db.from("user_profile").select("*").eq("user_id", _userId).single();
+  _userProfile = data || null;
+  return _userProfile;
+}
+
+async function saveUserProfile(profile) {
+  if (!_userId) return;
+  const row = { user_id: _userId, ...profile, onboarding_completed: true };
+  await db.from("user_profile").upsert(row, { onConflict: "user_id" });
+  _userProfile = row;
+}
+
+function getUserProfile() {
+  return _userProfile;
 }
 
 // ── Internal ───────────────────────────────────────

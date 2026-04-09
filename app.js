@@ -116,6 +116,47 @@ function renderDailyTip() {
   `;
 }
 
+// ── AFTER LOGIN ────────────────────────────────────
+async function afterLogin() {
+  const profile = await loadUserProfile();
+  if (!profile || !profile.onboarding_completed) {
+    goTo("onboarding");
+  } else {
+    await renderHome();
+    goTo("home");
+  }
+}
+
+// ── ONBOARDING ─────────────────────────────────────
+const _onboardingSelections = { level: null, days: null, duration: null };
+
+function selectOpt(group, value) {
+  _onboardingSelections[group] = value;
+
+  const container = document.getElementById(`opt-${group}`);
+  container.querySelectorAll(".onboarding-opt").forEach(btn => {
+    btn.classList.toggle("selected", btn.dataset.value === value);
+  });
+
+  const allSelected = _onboardingSelections.level && _onboardingSelections.days && _onboardingSelections.duration;
+  document.getElementById("onboarding-submit").disabled = !allSelected;
+}
+
+async function submitOnboarding() {
+  const btn = document.getElementById("onboarding-submit");
+  btn.disabled = true;
+  btn.textContent = "שומר...";
+
+  await saveUserProfile({
+    fitness_level:    _onboardingSelections.level,
+    days_per_week:    parseInt(_onboardingSelections.days),
+    workout_duration: parseInt(_onboardingSelections.duration),
+  });
+
+  await renderHome();
+  goTo("home");
+}
+
 // ── HOME SCREEN ────────────────────────────────────
 async function renderHome() {
   await loadTotalWorkouts();
@@ -271,6 +312,14 @@ async function startWorkout(index) {
   openWarmup(index);
 }
 
+function getMaxExercises() {
+  const duration = getUserProfile()?.workout_duration || 45;
+  if (duration <= 30) return 4;
+  if (duration <= 45) return 6;
+  if (duration <= 60) return 8;
+  return Infinity;
+}
+
 async function doStartWorkout(index) {
   state.workoutIndex = index;
   state.exercisesDone = new Set();
@@ -328,7 +377,7 @@ function renderWorkoutScreen() {
 function updateWorkoutProgress() {
   const w = currentWorkout();
   const done  = state.exercisesDone.size;
-  const total = w.exercises.length;
+  const total = Math.min(w.exercises.length, getMaxExercises());
   $("#workout-progress-fill").style.width = (total ? (done / total) * 100 : 0) + "%";
   $("#workout-progress-label").textContent = `${done} / ${total} תרגילים הושלמו`;
   if (done === total && total > 0) setTimeout(showDoneScreen, 600);
@@ -338,8 +387,9 @@ function renderExerciseList() {
   const w = currentWorkout();
   const container = $("#exercise-list");
   container.innerHTML = "";
+  const maxEx = getMaxExercises();
 
-  w.exercises.forEach((ex, i) => {
+  w.exercises.slice(0, maxEx).forEach((ex, i) => {
     const done     = state.exercisesDone.has(i);
     const lvlData  = getLevelData(ex);
     const lvlIdx   = getLevel(ex);
@@ -964,8 +1014,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentUser = initSession.user;
     setCurrentUser(currentUser.id);
     renderUserInfo(currentUser);
-    await renderHome();
-    goTo("home");
+    await afterLogin();
   } else {
     goTo("login");
   }
@@ -977,8 +1026,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       currentUser = session.user;
       setCurrentUser(currentUser.id);
       renderUserInfo(currentUser);
-      await renderHome();
-      goTo("home");
+      await afterLogin();
     } else {
       currentUser = null;
       setCurrentUser(null);

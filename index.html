@@ -83,6 +83,47 @@
   </div>
 
   <!-- ══════════════════════════════════════
+       ONBOARDING SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-onboarding" class="screen">
+    <div class="onboarding-body">
+      <div class="onboarding-logo">💪</div>
+      <div class="onboarding-title">בוא נכיר אותך</div>
+      <div class="onboarding-sub">כדי שנוכל להתאים לך תוכנית אימונים אישית</div>
+
+      <div class="onboarding-section">
+        <div class="onboarding-q">מה הרמה הנוכחית שלך?</div>
+        <div class="onboarding-options" id="opt-level">
+          <button class="onboarding-opt" data-value="beginner"  onclick="selectOpt('level','beginner')">מתחיל<span>לא מתאמן בקביעות</span></button>
+          <button class="onboarding-opt" data-value="intermediate" onclick="selectOpt('level','intermediate')">בינוני<span>מתאמן מדי פעם</span></button>
+          <button class="onboarding-opt" data-value="advanced" onclick="selectOpt('level','advanced')">מתקדם<span>מתאמן בקביעות</span></button>
+        </div>
+      </div>
+
+      <div class="onboarding-section">
+        <div class="onboarding-q">כמה פעמים בשבוע אתה מתכנן להתאמן?</div>
+        <div class="onboarding-options row" id="opt-days">
+          <button class="onboarding-opt" data-value="2" onclick="selectOpt('days','2')">2<span>ימים</span></button>
+          <button class="onboarding-opt" data-value="3" onclick="selectOpt('days','3')">3<span>ימים</span></button>
+          <button class="onboarding-opt" data-value="4" onclick="selectOpt('days','4')">4+<span>ימים</span></button>
+        </div>
+      </div>
+
+      <div class="onboarding-section">
+        <div class="onboarding-q">כמה זמן יש לך לכל אימון?</div>
+        <div class="onboarding-options row" id="opt-duration">
+          <button class="onboarding-opt" data-value="30"  onclick="selectOpt('duration','30')">~30<span>דקות</span></button>
+          <button class="onboarding-opt" data-value="45"  onclick="selectOpt('duration','45')">~45<span>דקות</span></button>
+          <button class="onboarding-opt" data-value="60"  onclick="selectOpt('duration','60')">~60<span>דקות</span></button>
+          <button class="onboarding-opt" data-value="75"  onclick="selectOpt('duration','75')">60+<span>דקות</span></button>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="onboarding-submit" onclick="submitOnboarding()" disabled>יאללה נתחיל! 🚀</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
        WORKOUT SCREEN
   ══════════════════════════════════════ -->
   <div id="screen-workout" class="screen">
