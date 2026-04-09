@@ -2,6 +2,8 @@
    CALISTHENICS COACH — app.js
    ===================================================== */
 
+const ADMIN_EMAIL = "elia666@gmail.com";
+
 // ── State ──────────────────────────────────────────
 let state = {
   screen: "home",
@@ -71,6 +73,10 @@ function renderUserInfo(user) {
   el.innerHTML = avatar
     ? `<img src="${avatar}" class="user-avatar" alt="${name}" /><span class="user-name">${name}</span>`
     : `<span class="user-name">${name}</span>`;
+
+  // Show admin button only for admin user
+  const adminBtn = $("#admin-btn");
+  if (adminBtn) adminBtn.style.display = user.email === ADMIN_EMAIL ? "flex" : "none";
 }
 
 // ── DAILY TIP ──────────────────────────────────────
@@ -721,6 +727,78 @@ async function openPRs() {
       `;
       list.appendChild(card);
     });
+}
+
+// ── ADMIN SCREEN ──────────────────────────────────
+async function openAdmin() {
+  if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+  goTo("admin");
+  const body = $("#admin-body");
+  body.innerHTML = `<div class="history-loading">טוען נתונים...</div>`;
+
+  const { data, error } = await db.rpc("get_admin_stats");
+  if (error || !data) {
+    body.innerHTML = `<div class="history-empty">שגיאה בטעינת נתונים</div>`;
+    return;
+  }
+
+  const workoutNames = { push: "יום A — דחיפה", pull: "יום B — משיכה", "legs-core": "יום C — רגליים" };
+  const byType = (data.workouts_by_type || []).map(t =>
+    `<div class="admin-row"><span>${workoutNames[t.workout_id] || t.workout_id}</span><strong>${t.total}</strong></div>`
+  ).join("");
+
+  const activityBars = buildAdminChart(data.daily_activity || []);
+
+  body.innerHTML = `
+    <div class="admin-stats-grid">
+      <div class="admin-stat-card">
+        <div class="admin-stat-num">${data.total_users}</div>
+        <div class="admin-stat-label">משתמשים</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-num">${data.total_workouts}</div>
+        <div class="admin-stat-label">אימונים סה"כ</div>
+      </div>
+      <div class="admin-stat-card accent">
+        <div class="admin-stat-num">${data.workouts_this_week}</div>
+        <div class="admin-stat-label">השבוע</div>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">אימונים לפי סוג</div>
+      ${byType || '<div class="history-empty">אין נתונים</div>'}
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">פעילות 14 ימים אחרונים</div>
+      ${activityBars}
+    </div>
+  `;
+}
+
+function buildAdminChart(dailyData) {
+  if (!dailyData.length) return '<div class="history-empty">אין נתונים</div>';
+  const sorted = [...dailyData].sort((a, b) => a.date.localeCompare(b.date));
+  const max = Math.max(...sorted.map(d => d.count), 1);
+  const BAR_W = 16, GAP = 6, H = 60, LABEL_H = 18;
+  const totalW = sorted.length * (BAR_W + GAP) - GAP;
+
+  const bars = sorted.map((d, i) => {
+    const barH = Math.max(Math.round((d.count / max) * H), 4);
+    const x = i * (BAR_W + GAP);
+    const y = H - barH;
+    const day = d.date.slice(5); // MM-DD
+    return `
+      <rect x="${x}" y="${y}" width="${BAR_W}" height="${barH}" rx="3" fill="var(--accent)" opacity="0.8"/>
+      <text x="${x + BAR_W/2}" y="${H + LABEL_H - 4}" text-anchor="middle" font-size="8" fill="var(--text-muted)">${day}</text>
+      ${d.count > 0 ? `<text x="${x + BAR_W/2}" y="${y - 3}" text-anchor="middle" font-size="9" fill="var(--accent)" font-weight="600">${d.count}</text>` : ""}
+    `;
+  }).join("");
+
+  return `<div class="admin-chart">
+    <svg viewBox="0 0 ${totalW} ${H + LABEL_H}" style="width:100%;overflow:visible">${bars}</svg>
+  </div>`;
 }
 
 // ── HISTORY SCREEN ────────────────────────────────

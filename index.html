@@ -46,6 +46,7 @@
     <div class="home-hero">
       <div class="home-top-bar">
         <div id="user-info" class="user-info"></div>
+        <button class="admin-btn" id="admin-btn" onclick="openAdmin()" style="display:none">⚙️</button>
         <button class="signout-btn" onclick="signOut()">יציאה</button>
       </div>
       <img src="GymJamLogo.png" class="home-logo-img" alt="GymJam" />
@@ -327,6 +328,21 @@
 
       <div class="share-row" id="share-row"></div>
       <button class="btn-primary" onclick="backToHome()" style="max-width:280px">חזרה לתפריט</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       ADMIN SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-admin" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="backToHome()">←</button>
+      <div class="header-title">Admin ⚙️</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <div class="admin-body" id="admin-body">
+      <div class="history-loading">טוען...</div>
     </div>
   </div>
 
