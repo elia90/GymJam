@@ -119,6 +119,29 @@
         </div>
       </div>
 
+      <div class="onboarding-section">
+        <div class="onboarding-q">מה המטרה העיקרית שלך?</div>
+        <div class="onboarding-options" id="opt-goal">
+          <button class="onboarding-opt" data-value="mass"    onclick="selectOpt('goal','mass')">💪 מסה<span>בניית שריר וכוח מקסימלי</span></button>
+          <button class="onboarding-opt" data-value="tone"    onclick="selectOpt('goal','tone')">🔥 חיטוב<span>ירידה בשומן וחיטוב הגוף</span></button>
+          <button class="onboarding-opt" data-value="both"    onclick="selectOpt('goal','both')">⚡ שניהם<span>כוח, כושר וכללי</span></button>
+        </div>
+      </div>
+
+      <div class="onboarding-section">
+        <div class="onboarding-q">על אילו שרירים תרצה לעבוד? <span class="onboarding-optional">(אופציונלי)</span></div>
+        <div class="muscle-tags" id="muscle-tags">
+          <button class="muscle-tag" data-muscle="chest"     onclick="toggleMuscle(this)">חזה</button>
+          <button class="muscle-tag" data-muscle="back"      onclick="toggleMuscle(this)">גב</button>
+          <button class="muscle-tag" data-muscle="shoulders" onclick="toggleMuscle(this)">כתפיים</button>
+          <button class="muscle-tag" data-muscle="triceps"   onclick="toggleMuscle(this)">טריצפס</button>
+          <button class="muscle-tag" data-muscle="biceps"    onclick="toggleMuscle(this)">ביצפס</button>
+          <button class="muscle-tag" data-muscle="abs"       onclick="toggleMuscle(this)">בטן</button>
+          <button class="muscle-tag" data-muscle="legs"      onclick="toggleMuscle(this)">רגליים</button>
+          <button class="muscle-tag" data-muscle="glutes"    onclick="toggleMuscle(this)">ישבן</button>
+        </div>
+      </div>
+
       <button class="btn-primary" id="onboarding-submit" onclick="submitOnboarding()" disabled>יאללה נתחיל! 🚀</button>
     </div>
   </div>

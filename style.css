@@ -121,6 +121,48 @@
 
 .onboarding-opt:hover:not(.selected) { border-color: var(--accent); }
 
+.onboarding-optional {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.muscle-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.muscle-tag {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.muscle-tag.selected {
+  border-color: var(--accent);
+  background: rgba(70,130,180,.12);
+  color: var(--accent);
+}
+
+.muscle-tag:hover:not(.selected) { border-color: var(--accent); }
+
+.recommended-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f5a623;
+  background: rgba(245,166,35,.12);
+  border-radius: 6px;
+  padding: 1px 6px;
+  vertical-align: middle;
+}
+
 #onboarding-submit { width: 100%; max-width: 100%; margin-top: 8px; }
 #onboarding-submit:disabled { opacity: 0.4; cursor: not-allowed; }
 

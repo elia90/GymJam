@@ -128,7 +128,8 @@ async function afterLogin() {
 }
 
 // ── ONBOARDING ─────────────────────────────────────
-const _onboardingSelections = { level: null, days: null, duration: null };
+const _onboardingSelections = { level: null, days: null, duration: null, goal: null };
+const _selectedMuscles = new Set();
 
 function selectOpt(group, value) {
   _onboardingSelections[group] = value;
@@ -138,8 +139,20 @@ function selectOpt(group, value) {
     btn.classList.toggle("selected", btn.dataset.value === value);
   });
 
-  const allSelected = _onboardingSelections.level && _onboardingSelections.days && _onboardingSelections.duration;
+  const allSelected = _onboardingSelections.level && _onboardingSelections.days &&
+                      _onboardingSelections.duration && _onboardingSelections.goal;
   document.getElementById("onboarding-submit").disabled = !allSelected;
+}
+
+function toggleMuscle(btn) {
+  const muscle = btn.dataset.muscle;
+  if (_selectedMuscles.has(muscle)) {
+    _selectedMuscles.delete(muscle);
+    btn.classList.remove("selected");
+  } else {
+    _selectedMuscles.add(muscle);
+    btn.classList.add("selected");
+  }
 }
 
 async function submitOnboarding() {
@@ -151,6 +164,8 @@ async function submitOnboarding() {
     fitness_level:    _onboardingSelections.level,
     days_per_week:    parseInt(_onboardingSelections.days),
     workout_duration: parseInt(_onboardingSelections.duration),
+    goal:             _onboardingSelections.goal,
+    target_muscles:   [..._selectedMuscles],
   });
 
   await renderHome();
@@ -193,17 +208,27 @@ async function renderHome() {
       : "תוכנית 3 ימים בשבוע";
   }
 
+  // Muscle → workout mapping
+  const muscleMap = {
+    push: ["chest", "shoulders", "triceps"],
+    pull: ["back", "biceps"],
+    legs: ["legs", "glutes", "abs"],
+  };
+  const targetMuscles = getUserProfile()?.target_muscles || [];
+
   WORKOUTS.slice(0, visibleCount).forEach((w, i) => {
     const colorClass = ["push", "pull", "legs"][i];
     const letters = ["A", "B", "C"];
     const maxEx = getMaxExercises();
     const exCount = Math.min(w.exercises.length, maxEx);
+    const isRecommended = targetMuscles.length > 0 &&
+      muscleMap[colorClass]?.some(m => targetMuscles.includes(m));
     const card = document.createElement("div");
     card.className = `workout-card ${colorClass}`;
     card.innerHTML = `
       <div class="workout-card-letter ${colorClass}">${letters[i]}</div>
       <div class="workout-card-info">
-        <div class="workout-card-name">${w.name}</div>
+        <div class="workout-card-name">${w.name}${isRecommended ? ' <span class="recommended-badge">מומלץ ⭐</span>' : ""}</div>
         <div class="workout-card-desc">${w.description}</div>
         <div class="workout-card-meta">
           <span class="badge badge-default">${exCount} תרגילים</span>
@@ -618,12 +643,19 @@ function doneSet() {
   renderSetDots();
   updateDoneButton();
   if (anyUndone >= 0) {
-    startRestTimer(ex.rest);
+    startRestTimer(getAdjustedRest(ex.rest));
     state.currentSet = (nextUndone >= 0 ? nextUndone : anyUndone) + 1;
   }
 }
 
 // ── REST TIMER ─────────────────────────────────────
+function getAdjustedRest(baseSeconds) {
+  const goal = getUserProfile()?.goal;
+  if (goal === "tone") return Math.round(baseSeconds * 0.7);  // חיטוב — מנוחה קצרה יותר
+  if (goal === "mass") return Math.round(baseSeconds * 1.2);  // מסה — מנוחה ארוכה יותר
+  return baseSeconds;
+}
+
 function startRestTimer(seconds) {
   stopRestTimer();
   state.restTotal = state.restRemaining = seconds;
