@@ -167,12 +167,37 @@ async function renderHome() {
 
   renderDailyTip();
 
+  const tipOrder = $("#tip-order");
+  if (tipOrder) {
+    const days = getUserProfile()?.days_per_week || 3;
+    tipOrder.textContent = days <= 2
+      ? "הסדר המומלץ: A ← B ← מנוחה ← A ← B..."
+      : days >= 4
+      ? "הסדר המומלץ: A ← B ← C ← A ← מנוחה..."
+      : "הסדר המומלץ: A ← B ← C ← מנוחה ← A...";
+  }
+
   const container = $("#workout-cards");
   container.innerHTML = "";
 
-  WORKOUTS.forEach((w, i) => {
+  const daysPerWeek = getUserProfile()?.days_per_week || 3;
+  const visibleCount = Math.min(daysPerWeek, WORKOUTS.length);
+
+  // Update section title based on days
+  const sectionTitle = document.querySelector(".section-title");
+  if (sectionTitle) {
+    sectionTitle.textContent = visibleCount === 2
+      ? "תוכנית 2 ימים בשבוע"
+      : visibleCount >= 4
+      ? "תוכנית 4+ ימים בשבוע"
+      : "תוכנית 3 ימים בשבוע";
+  }
+
+  WORKOUTS.slice(0, visibleCount).forEach((w, i) => {
     const colorClass = ["push", "pull", "legs"][i];
     const letters = ["A", "B", "C"];
+    const maxEx = getMaxExercises();
+    const exCount = Math.min(w.exercises.length, maxEx);
     const card = document.createElement("div");
     card.className = `workout-card ${colorClass}`;
     card.innerHTML = `
@@ -181,8 +206,8 @@ async function renderHome() {
         <div class="workout-card-name">${w.name}</div>
         <div class="workout-card-desc">${w.description}</div>
         <div class="workout-card-meta">
-          <span class="badge badge-default">${w.exercises.length} תרגילים</span>
-          <span class="badge badge-accent">~${Math.round(w.exercises.length * 5)} דקות</span>
+          <span class="badge badge-default">${exCount} תרגילים</span>
+          <span class="badge badge-accent">~${Math.round(exCount * 5)} דקות</span>
         </div>
       </div>
       <div class="workout-card-arrow">‹</div>
