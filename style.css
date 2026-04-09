@@ -1307,6 +1307,27 @@ body {
 }
 .history-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+.history-chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 0 16px 8px;
+}
+
+.history-chart-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.history-chart {
+  display: flex;
+  justify-content: center;
+}
+
 .history-stats-bar {
   display: flex;
   align-items: center;

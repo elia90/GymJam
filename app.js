@@ -718,6 +718,8 @@ async function openHistory() {
   $("#history-week-count").textContent = `${thisWeek} אימון${thisWeek === 1 ? "" : "ים"} השבוע`;
   $("#history-total-count").textContent = `${entries.length} סה"כ`;
 
+  renderActivityChart(entries);
+
   // Build list grouped by week
   list.innerHTML = "";
   let lastWeekLabel = null;
@@ -755,6 +757,63 @@ async function openHistory() {
     `;
     list.appendChild(card);
   });
+}
+
+function renderActivityChart(entries) {
+  const wrap = $("#history-chart-wrap");
+  const container = $("#history-chart");
+  if (!wrap || !container) return;
+
+  // Build 8-week buckets (index 0 = oldest, 7 = current)
+  const NUM_WEEKS = 8;
+  const now = new Date();
+  const buckets = Array.from({ length: NUM_WEEKS }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (NUM_WEEKS - 1 - i) * 7);
+    return { label: getShortWeekLabel(d, i === NUM_WEEKS - 1), count: 0 };
+  });
+
+  entries.forEach(e => {
+    const d = new Date(e.completed_at);
+    const weeksAgo = Math.floor((now - d) / (7 * 24 * 60 * 60 * 1000));
+    const idx = NUM_WEEKS - 1 - weeksAgo;
+    if (idx >= 0 && idx < NUM_WEEKS) buckets[idx].count++;
+  });
+
+  const maxCount = Math.max(...buckets.map(b => b.count), 1);
+  const BAR_W = 28, GAP = 10, H = 90, LABEL_H = 20;
+  const totalW = NUM_WEEKS * (BAR_W + GAP) - GAP;
+
+  const bars = buckets.map((b, i) => {
+    const barH = b.count > 0 ? Math.max(Math.round((b.count / maxCount) * H), 8) : 4;
+    const x = i * (BAR_W + GAP);
+    const y = H - barH;
+    const isCurrentWeek = i === NUM_WEEKS - 1;
+    const fill = isCurrentWeek ? "var(--accent)" : "var(--surface2)";
+    const textFill = isCurrentWeek ? "var(--accent)" : "var(--text-muted)";
+    const countLabel = b.count > 0
+      ? `<text x="${x + BAR_W / 2}" y="${y - 4}" text-anchor="middle" font-size="10" fill="${textFill}" font-weight="600">${b.count}</text>`
+      : "";
+    return `
+      <rect x="${x}" y="${y}" width="${BAR_W}" height="${barH}" rx="5" fill="${fill}" />
+      ${countLabel}
+      <text x="${x + BAR_W / 2}" y="${H + LABEL_H - 4}" text-anchor="middle" font-size="10" fill="var(--text-muted)">${b.label}</text>
+    `;
+  }).join("");
+
+  container.innerHTML = `
+    <svg viewBox="0 0 ${totalW} ${H + LABEL_H}" xmlns="http://www.w3.org/2000/svg"
+         style="width:100%;max-width:${totalW * 1.2}px;overflow:visible">
+      ${bars}
+    </svg>
+  `;
+  wrap.style.display = "block";
+}
+
+function getShortWeekLabel(date, isCurrent) {
+  if (isCurrent) return "השבוע";
+  const months = ["ינו","פבר","מרץ","אפר","מאי","יוני","יולי","אוג","ספט","אוק","נוב","דצמ"];
+  return `${date.getDate()}/${months[date.getMonth()]}`;
 }
 
 function getWeekLabel(date) {
