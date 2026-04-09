@@ -124,20 +124,20 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0f1117;
-  --surface:   #1a1d27;
-  --surface2:  #242736;
-  --border:    #2e3347;
-  --text:      #e8eaf0;
-  --text-muted:#8b90a7;
-  --accent:    #e8353a;
-  --accent2:   #78c238;
-  --push:      #e74c3c;
-  --pull:      #3498db;
-  --legs:      #2ecc71;
+  --bg:        #f0f2f5;
+  --surface:   #ffffff;
+  --surface2:  #e4e8ee;
+  --border:    #cdd3dc;
+  --text:      #1e2a38;
+  --text-muted:#6b7a90;
+  --accent:    #4682b4;
+  --accent2:   #2c5f8a;
+  --push:      #e05c5c;
+  --pull:      #4682b4;
+  --legs:      #3a9e6e;
   --radius:    14px;
   --radius-sm: 8px;
-  --shadow:    0 4px 24px rgba(0,0,0,.4);
+  --shadow:    0 4px 24px rgba(70,130,180,.15);
   --transition:0.2s ease;
 }
 
@@ -301,7 +301,7 @@ body {
 }
 
 .badge-default { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
-.badge-accent  { background: rgba(232,53,58,.15); color: var(--accent2); border: 1px solid rgba(232,53,58,.3); }
+.badge-accent  { background: rgba(70,130,180,.15); color: var(--accent2); border: 1px solid rgba(70,130,180,.3); }
 
 .workout-card-arrow {
   color: var(--text-muted);
@@ -311,8 +311,8 @@ body {
 
 /* ===== TIPS CARD ===== */
 .tip-card {
-  background: rgba(232,53,58,.08);
-  border: 1px solid rgba(232,53,58,.2);
+  background: rgba(70,130,180,.08);
+  border: 1px solid rgba(70,130,180,.2);
   border-radius: var(--radius);
   padding: 16px;
 }
@@ -409,9 +409,9 @@ body {
 .exercise-item.done  { opacity: 0.45; }
 
 .exercise-item.done .exercise-num {
-  background: #27ae60;
+  background: var(--accent);
   color: white;
-  border-color: #27ae60;
+  border-color: var(--accent);
 }
 
 .exercise-num {
@@ -518,13 +518,13 @@ body {
 
 .set-dot.active {
   border-color: var(--accent);
-  background: rgba(232,53,58,.15);
+  background: rgba(70,130,180,.15);
   color: var(--accent2);
 }
 
 .set-dot.done {
-  background: #27ae60;
-  border-color: #27ae60;
+  background: var(--accent);
+  border-color: var(--accent);
   color: white;
 }
 
@@ -671,22 +671,22 @@ body {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 20px;
-  background: rgba(232,53,58,.12);
+  background: rgba(70,130,180,.12);
   color: var(--accent2);
-  border: 1px solid rgba(232,53,58,.25);
+  border: 1px solid rgba(70,130,180,.25);
   white-space: nowrap;
 }
 
 .level-badge-max {
-  background: rgba(120,194,56,.12);
-  color: #78c238;
-  border-color: rgba(120,194,56,.3);
+  background: rgba(70,130,180,.12);
+  color: var(--accent2);
+  border-color: rgba(70,130,180,.3);
 }
 
 .level-up-hint {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #2ecc71;
+  color: var(--accent);
   animation: pulse 1.6s ease-in-out infinite;
 }
 
@@ -754,7 +754,7 @@ body {
 .level-adj-btn:hover:not(:disabled) {
   border-color: var(--accent2);
   color: var(--accent2);
-  background: rgba(232,53,58,.1);
+  background: rgba(70,130,180,.1);
 }
 
 .level-adj-btn:disabled {
@@ -766,8 +766,8 @@ body {
 .levelup-container {
   width: 100%;
   max-width: 320px;
-  background: rgba(46,204,113,.07);
-  border: 1px solid rgba(46,204,113,.25);
+  background: rgba(70,130,180,.07);
+  border: 1px solid rgba(70,130,180,.25);
   border-radius: var(--radius);
   padding: 14px 16px;
   margin-bottom: 20px;
@@ -776,7 +776,7 @@ body {
 .levelup-header {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #2ecc71;
+  color: var(--accent);
   margin-bottom: 10px;
 }
 
@@ -785,7 +785,7 @@ body {
   flex-direction: column;
   gap: 2px;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(46,204,113,.15);
+  border-bottom: 1px solid rgba(70,130,180,.15);
 }
 
 .levelup-item:last-child { border-bottom: none; padding-bottom: 0; }
@@ -801,7 +801,7 @@ body {
   color: var(--text-muted);
 }
 
-.levelup-arrow strong { color: #2ecc71; }
+.levelup-arrow strong { color: var(--accent); }
 
 /* ===== INSTRUCTIONS PANEL ===== */
 .instructions-toggle {
@@ -885,8 +885,8 @@ body {
 .step-num {
   width: 24px; height: 24px;
   border-radius: 50%;
-  background: rgba(232,53,58,.15);
-  border: 1px solid rgba(232,53,58,.3);
+  background: rgba(70,130,180,.15);
+  border: 1px solid rgba(70,130,180,.3);
   color: var(--accent2);
   font-size: 0.72rem;
   font-weight: 700;
@@ -904,8 +904,8 @@ body {
 /* Mistakes */
 .instructions-mistakes {
   margin-top: 14px;
-  background: rgba(231,76,60,.06);
-  border: 1px solid rgba(231,76,60,.2);
+  background: rgba(70,130,180,.06);
+  border: 1px solid rgba(70,130,180,.2);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
 }
@@ -913,7 +913,7 @@ body {
 .instructions-mistakes-title {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #e74c3c;
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 8px;
@@ -929,7 +929,7 @@ body {
 
 .mistake-item::before {
   content: '✗';
-  color: #e74c3c;
+  color: var(--accent);
   flex-shrink: 0;
   font-weight: 700;
 }
@@ -944,10 +944,10 @@ body {
   gap: 8px;
   margin-top: 14px;
   padding: 10px 16px;
-  background: rgba(255,0,0,.08);
-  border: 1px solid rgba(255,0,0,.2);
+  background: rgba(70,130,180,.08);
+  border: 1px solid rgba(70,130,180,.2);
   border-radius: var(--radius-sm);
-  color: #ff5c5c;
+  color: var(--accent);
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
@@ -955,8 +955,8 @@ body {
 }
 
 .instructions-video-link:hover {
-  background: rgba(255,0,0,.14);
-  color: #ff7a7a;
+  background: rgba(70,130,180,.14);
+  color: var(--accent2);
 }
 
 /* ===== WARMUP SCREEN ===== */
@@ -995,7 +995,7 @@ body {
 .warmup-preview-num {
   width: 22px; height: 22px;
   border-radius: 50%;
-  background: rgba(232,53,58,.12);
+  background: rgba(70,130,180,.12);
   color: var(--accent);
   font-size: 0.72rem;
   font-weight: 700;
