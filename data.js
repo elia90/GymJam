@@ -495,3 +495,46 @@ const WORKOUTS = [
     ],
   },
 ];
+
+/* =====================================================
+   WARMUPS — מותאמים לכל יום אימון
+   כל תרגיל: { name, duration (שניות), instruction, videoSearch }
+   ===================================================== */
+const WARMUPS = {
+  push: {
+    title: "חימום — יום דחיפה",
+    duration: 5,
+    exercises: [
+      { name: "קפיצות ג'ק", duration: 40, instruction: "קפוץ, פרוש ידיים ורגליים, חזור למרכז — קצב בינוני", videoSearch: "jumping jacks warm up" },
+      { name: "סיבובי כתפיים", duration: 30, instruction: "ידיים לצדדים, סובב כתפיים קדימה ואחורה — 15 לכל כיוון", videoSearch: "arm circles shoulder warmup" },
+      { name: "סיבובי מרפקים", duration: 30, instruction: "כופף מרפקים, סובב בעיגולים גדולים — משחרר מפרקים", videoSearch: "elbow circles warmup" },
+      { name: "שכיבות סמיכה על ברכיים", duration: 40, instruction: "5–8 חזרות איטיות, מתמקד בטכניקה — לא בכוח", videoSearch: "knee push up warm up" },
+      { name: "Scapular Push-ups", duration: 30, instruction: "ידיים ישרות, הזז שכמות קדימה ואחורה בלי לכופף מרפקים", videoSearch: "scapular push up warmup" },
+      { name: "מתיחת חזה בדלת", duration: 30, instruction: "שים יד על מסגרת דלת, סובב גוף החוצה — תרגיש מתיחה בחזה", videoSearch: "doorway chest stretch warmup" },
+    ],
+  },
+  pull: {
+    title: "חימום — יום משיכה",
+    duration: 5,
+    exercises: [
+      { name: "קפיצות ג'ק", duration: 40, instruction: "קצב בינוני, 30–40 שניות — מעלה דופק ומחמם כל הגוף", videoSearch: "jumping jacks warm up" },
+      { name: "Dead Hang", duration: 30, instruction: "תלה על הבר עם ידיים ישרות — משחרר עמוד שדרה וכתפיים", videoSearch: "dead hang warm up" },
+      { name: "סיבובי כתפיים אחוריים", duration: 30, instruction: "ידיים לצדדים, סיבובים גדולים לאחור — 15 חזרות", videoSearch: "shoulder rolls warmup" },
+      { name: "Cat-Cow", duration: 40, instruction: "על ארבע, עגל גב למעלה ואז שקע למטה — 10 חזרות איטיות", videoSearch: "cat cow warmup spine" },
+      { name: "Band Pull-Apart (או ידיים)", duration: 30, instruction: "ידיים קדימה ברוחב כתפיים, פרוש לצדדים — סחוט שכמות", videoSearch: "band pull apart warmup" },
+      { name: "Scapular Rows", duration: 30, instruction: "תלה על בר, הזז שכמות למטה ולאחור בלי לכופף מרפקים", videoSearch: "scapular retraction warmup" },
+    ],
+  },
+  "legs-core": {
+    title: "חימום — יום רגליים + ליבה",
+    duration: 5,
+    exercises: [
+      { name: "ריצה במקום", duration: 40, instruction: "הרם ברכיים גבוה — לפחות לגובה הירך, קצב מהיר", videoSearch: "high knees warmup" },
+      { name: "סקוואט עם משקל גוף — איטי", duration: 40, instruction: "5 שניות ירידה, 2 שניות למטה, 3 שניות עלייה — 5 חזרות", videoSearch: "slow bodyweight squat warmup" },
+      { name: "Hip Circles", duration: 30, instruction: "ידיים על הירכיים, סובב ירכיים בעיגולים גדולים — 10 לכל כיוון", videoSearch: "hip circles warmup mobility" },
+      { name: "Leg Swings קדימה-אחורה", duration: 30, instruction: "אחוז בקיר, הניף רגל קדימה ואחורה — 15 לכל רגל", videoSearch: "leg swings front back warmup" },
+      { name: "Leg Swings לצדדים", duration: 30, instruction: "אחוז בקיר, הניף רגל לצדדים — 15 לכל רגל", videoSearch: "lateral leg swings warmup" },
+      { name: "Glute Bridge איטי", duration: 40, instruction: "3 שניות עלייה, 2 שניות למעלה, 3 שניות ירידה — 5 חזרות", videoSearch: "slow glute bridge warmup" },
+    ],
+  },
+};

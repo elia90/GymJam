@@ -959,6 +959,153 @@ body {
   color: #ff7a7a;
 }
 
+/* ===== WARMUP SCREEN ===== */
+.warmup-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.warmup-intro-emoji { font-size: 4rem; margin-bottom: 12px; }
+.warmup-intro-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+.warmup-intro-sub   { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+
+.warmup-exercise-preview {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.warmup-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.warmup-preview-item:last-child { border-bottom: none; }
+
+.warmup-preview-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(232,53,58,.12);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.warmup-preview-dur {
+  margin-right: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.btn-skip {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 4px;
+}
+
+/* Active warmup */
+.warmup-progress-row {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.warmup-step-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.warmup-progress-bar {
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.warmup-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.warmup-exercise-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.warmup-instruction {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+/* Countdown ring */
+.warmup-countdown-wrap {
+  position: relative;
+  width: 140px; height: 140px;
+  margin-bottom: 28px;
+}
+
+.warmup-ring { width: 140px; height: 140px; transform: rotate(-90deg); }
+
+.warmup-ring-bg {
+  fill: none;
+  stroke: var(--surface2);
+  stroke-width: 8;
+}
+
+.warmup-ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 326.7;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+}
+
+.warmup-countdown-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.warmup-btns {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* ===== PR CELEBRATION MODAL ===== */
 .pr-modal {
   display: none;

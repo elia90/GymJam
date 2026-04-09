@@ -17,8 +17,14 @@ let state = {
   levelUps: [],
 };
 
-let currentUser    = null;
+let currentUser          = null;
 let workoutTimerInterval = null;
+let warmupState = {
+  workoutIndex:    null,
+  exerciseIndex:   0,
+  countdownTimer:  null,
+  remaining:       0,
+};
 
 // ── Helpers ────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -100,7 +106,124 @@ async function renderHome() {
 }
 
 // ── START WORKOUT ──────────────────────────────────
+// ── WARMUP ─────────────────────────────────────────
+function openWarmup(workoutIndex) {
+  warmupState.workoutIndex  = workoutIndex;
+  warmupState.exerciseIndex = 0;
+  clearWarmupTimer();
+
+  const w       = WORKOUTS[workoutIndex];
+  const warmup  = WARMUPS[w.id];
+
+  $("#warmup-header-title").textContent = warmup.title;
+  $("#warmup-intro").style.display      = "";
+  $("#warmup-active").style.display     = "none";
+  $("#warmup-done").style.display       = "none";
+
+  // Preview list
+  const preview = $("#warmup-preview");
+  preview.innerHTML = "";
+  warmup.exercises.forEach((ex, i) => {
+    const div = document.createElement("div");
+    div.className = "warmup-preview-item";
+    div.innerHTML = `<span class="warmup-preview-num">${i + 1}</span><span>${ex.name}</span><span class="warmup-preview-dur">${ex.duration}s</span>`;
+    preview.appendChild(div);
+  });
+
+  goTo("warmup");
+}
+
+function beginWarmup() {
+  $("#warmup-intro").style.display  = "none";
+  $("#warmup-active").style.display = "";
+  showWarmupExercise();
+}
+
+function showWarmupExercise() {
+  const w      = WORKOUTS[warmupState.workoutIndex];
+  const warmup = WARMUPS[w.id];
+  const ex     = warmup.exercises[warmupState.exerciseIndex];
+  const total  = warmup.exercises.length;
+  const idx    = warmupState.exerciseIndex;
+
+  $("#warmup-step-label").textContent = `תרגיל ${idx + 1} מתוך ${total}`;
+  $("#warmup-progress-fill").style.width = `${((idx) / total) * 100}%`;
+  $("#warmup-ex-name").textContent    = ex.name;
+  $("#warmup-instruction").textContent = ex.instruction;
+  $("#warmup-next-btn").textContent   = idx < total - 1 ? "הבא ›" : "סיום חימום ✓";
+
+  // Video link
+  const vid = $("#warmup-video-link");
+  vid.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(ex.videoSearch)}`;
+
+  startWarmupCountdown(ex.duration);
+}
+
+function startWarmupCountdown(seconds) {
+  clearWarmupTimer();
+  warmupState.remaining = seconds;
+  updateWarmupRing(seconds, seconds);
+
+  warmupState.countdownTimer = setInterval(() => {
+    warmupState.remaining--;
+    updateWarmupRing(warmupState.remaining, seconds);
+    if (warmupState.remaining <= 0) {
+      clearWarmupTimer();
+      nextWarmupExercise();
+    }
+  }, 1000);
+}
+
+function updateWarmupRing(remaining, total) {
+  $("#warmup-countdown").textContent = remaining;
+  const circumference = 2 * Math.PI * 52; // r=52
+  const fill = $("#warmup-ring-fill");
+  const offset = circumference * (1 - remaining / total);
+  fill.style.strokeDashoffset = offset;
+}
+
+function nextWarmupExercise() {
+  const w      = WORKOUTS[warmupState.workoutIndex];
+  const warmup = WARMUPS[w.id];
+  clearWarmupTimer();
+
+  warmupState.exerciseIndex++;
+  if (warmupState.exerciseIndex >= warmup.exercises.length) {
+    // Done
+    $("#warmup-active").style.display = "none";
+    $("#warmup-done").style.display   = "";
+    $("#warmup-progress-fill").style.width = "100%";
+  } else {
+    showWarmupExercise();
+  }
+}
+
+function finishWarmup() {
+  clearWarmupTimer();
+  doStartWorkout(warmupState.workoutIndex);
+}
+
+function skipWarmup() {
+  clearWarmupTimer();
+  if (warmupState.workoutIndex !== null) {
+    doStartWorkout(warmupState.workoutIndex);
+  } else {
+    backToHome();
+  }
+}
+
+function clearWarmupTimer() {
+  if (warmupState.countdownTimer) {
+    clearInterval(warmupState.countdownTimer);
+    warmupState.countdownTimer = null;
+  }
+}
+
 async function startWorkout(index) {
+  openWarmup(index);
+}
+
+async function doStartWorkout(index) {
   state.workoutIndex = index;
   state.exercisesDone = new Set();
   state.workoutStartTime = Date.now();

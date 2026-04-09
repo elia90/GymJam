@@ -172,6 +172,64 @@
   </div>
 
   <!-- ══════════════════════════════════════
+       WARMUP SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-warmup" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="skipWarmup()">→</button>
+      <div class="header-title" id="warmup-header-title">חימום</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <div class="warmup-body">
+      <!-- Intro card (shown before starting) -->
+      <div id="warmup-intro">
+        <div class="warmup-intro-emoji">🔥</div>
+        <div class="warmup-intro-title">זמן לחמם!</div>
+        <div class="warmup-intro-sub">5 דקות חימום לפני האימון<br>מפחית פציעות ומשפר ביצועים</div>
+        <div class="warmup-exercise-preview" id="warmup-preview"></div>
+        <button class="btn-primary" onclick="beginWarmup()">התחל חימום</button>
+        <button class="btn-skip" onclick="skipWarmup()">דלג על החימום</button>
+      </div>
+
+      <!-- Active warmup exercise -->
+      <div id="warmup-active" style="display:none">
+        <div class="warmup-progress-row">
+          <span class="warmup-step-label" id="warmup-step-label">תרגיל 1 מתוך 6</span>
+          <div class="warmup-progress-bar">
+            <div class="warmup-progress-fill" id="warmup-progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="warmup-exercise-name" id="warmup-ex-name"></div>
+        <div class="warmup-instruction" id="warmup-instruction"></div>
+
+        <!-- Countdown ring -->
+        <div class="warmup-countdown-wrap">
+          <svg class="warmup-ring" viewBox="0 0 120 120">
+            <circle class="warmup-ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="warmup-ring-fill" id="warmup-ring-fill" cx="60" cy="60" r="52"/>
+          </svg>
+          <div class="warmup-countdown-num" id="warmup-countdown">30</div>
+        </div>
+
+        <div class="warmup-btns">
+          <button class="btn-primary" id="warmup-next-btn" onclick="nextWarmupExercise()">הבא ›</button>
+          <a class="instructions-video-link" id="warmup-video-link" href="#" target="_blank" rel="noopener">▶ צפה בסרטון</a>
+        </div>
+      </div>
+
+      <!-- Done -->
+      <div id="warmup-done" style="display:none">
+        <div class="warmup-intro-emoji">💪</div>
+        <div class="warmup-intro-title">מוכן לאימון!</div>
+        <div class="warmup-intro-sub">חימום הושלם בהצלחה</div>
+        <button class="btn-primary" onclick="finishWarmup()">יאללה לאימון!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
        PR CELEBRATION MODAL
   ══════════════════════════════════════ -->
   <div id="pr-modal" class="pr-modal" onclick="closePRModal()">

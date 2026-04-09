@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash('/c/Program Files/Git/bin/git' add .)",
+      "Bash('/c/Program Files/Git/bin/git' commit -m 'Add built-in warmup screen before each workout')",
+      "Bash('/c/Program Files/Git/bin/git' remote set-url origin https://elia90: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@github.com/elia90/GymJam.git)",
+      "Bash('/c/Program Files/Git/bin/git' push origin main)",
+      "Bash('/c/Program Files/Git/bin/git' remote set-url origin https://github.com/elia90/GymJam.git)"
+    ]
+  }
+}
