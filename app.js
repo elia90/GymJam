@@ -626,8 +626,35 @@ function showDoneScreen() {
       list.appendChild(item);
     });
   }
+  renderShareButtons(w.name, w.exercises.length, duration);
   goTo("done");
   if (state.levelUps.length) setTimeout(showPRCelebration, 600);
+}
+
+function renderShareButtons(workoutName, exerciseCount, duration) {
+  const el = $("#share-row");
+  if (!el) return;
+
+  const text = `סיימתי ${workoutName} ב-GymJam! 💪\n${exerciseCount} תרגילים · ${duration} דקות`;
+  const url  = "https://gymjam.pages.dev";
+  const encodedText = encodeURIComponent(`${text}\n${url}`);
+
+  // Native share (mobile)
+  if (navigator.share) {
+    el.innerHTML = `<button class="share-btn" onclick="nativeShare()">שתף אימון ↗</button>`;
+    el._shareData = { title: "GymJam", text, url };
+  } else {
+    // Fallback: WhatsApp + Telegram
+    el.innerHTML = `
+      <a class="share-btn whatsapp" href="https://wa.me/?text=${encodedText}" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="share-btn telegram" href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}" target="_blank" rel="noopener">Telegram</a>
+    `;
+  }
+}
+
+function nativeShare() {
+  const el = $("#share-row");
+  if (el?._shareData) navigator.share(el._shareData).catch(() => {});
 }
 
 function showPRCelebration() {
