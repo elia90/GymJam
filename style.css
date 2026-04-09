@@ -381,7 +381,7 @@ body {
 .workout-progress-label {
   font-size: 0.75rem;
   color: var(--text-muted);
-  text-align: left;
+  text-align: right;
   margin-top: 6px;
 }
 

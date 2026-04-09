@@ -67,7 +67,7 @@
       <div class="tip-card">
         <div class="tip-card-title">💡 טיפים לתוכנית</div>
         <ul class="tip-card-list">
-          <li>הסדר המומלץ: A → B → C → מנוחה → A...</li>
+          <li>הסדר המומלץ: A ← B ← C ← מנוחה ← A...</li>
           <li>לפחות יום מנוחה בין אימונים</li>
           <li>חם לפני כל אימון — 5 דקות קפיצות / ריצה קלה</li>
           <li>שתה מים לפני, בזמן ואחרי</li>
@@ -82,7 +82,7 @@
   ══════════════════════════════════════ -->
   <div id="screen-workout" class="screen">
     <div class="header">
-      <button class="header-back" onclick="backToHome()">→</button>
+      <button class="header-back" onclick="backToHome()">←</button>
       <div class="header-title">האימון שלך</div>
       <div class="header-spacer"></div>
     </div>
@@ -112,7 +112,7 @@
   ══════════════════════════════════════ -->
   <div id="screen-active" class="screen">
     <div class="header active-header">
-      <button class="header-back" onclick="backToWorkout()">→</button>
+      <button class="header-back" onclick="backToWorkout()">←</button>
       <div class="header-title">תרגיל</div>
       <div class="header-spacer"></div>
     </div>
@@ -122,12 +122,12 @@
       <div class="active-muscles" id="active-muscles"></div>
 
       <div class="active-level-row">
-        <button class="level-adj-btn" onclick="adjustLevel(-1)" id="level-down-btn">▼</button>
+        <button class="level-adj-btn" onclick="adjustLevel(1)" id="level-up-btn">▲</button>
         <div class="active-level-center">
           <span class="level-badge" id="active-level-badge"></span>
           <span class="active-level-num" id="active-level-num"></span>
         </div>
-        <button class="level-adj-btn" onclick="adjustLevel(1)" id="level-up-btn">▲</button>
+        <button class="level-adj-btn" onclick="adjustLevel(-1)" id="level-down-btn">▼</button>
       </div>
 
       <div class="tip-box">
@@ -176,7 +176,7 @@
   ══════════════════════════════════════ -->
   <div id="screen-warmup" class="screen">
     <div class="header">
-      <button class="header-back" onclick="skipWarmup()">→</button>
+      <button class="header-back" onclick="skipWarmup()">←</button>
       <div class="header-title" id="warmup-header-title">חימום</div>
       <div class="header-spacer"></div>
     </div>
@@ -247,7 +247,7 @@
   ══════════════════════════════════════ -->
   <div id="screen-prs" class="screen">
     <div class="header">
-      <button class="header-back" onclick="backToHome()">→</button>
+      <button class="header-back" onclick="backToHome()">←</button>
       <div class="header-title">שיאים אישיים 🏆</div>
       <div class="header-spacer"></div>
     </div>
@@ -259,7 +259,7 @@
   ══════════════════════════════════════ -->
   <div id="screen-history" class="screen">
     <div class="header">
-      <button class="header-back" onclick="backToHome()">→</button>
+      <button class="header-back" onclick="backToHome()">←</button>
       <div class="header-title">היסטוריית אימונים</div>
       <div class="header-spacer"></div>
     </div>
