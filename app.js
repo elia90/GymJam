@@ -511,8 +511,28 @@ function startRestTimer(seconds) {
   state.restTimer = setInterval(() => {
     state.restRemaining--;
     showRestTimer(state.restRemaining, state.restTotal);
-    if (state.restRemaining <= 0) { stopRestTimer(); hideRestTimer(); renderSetDots(); updateDoneButton(); }
+    if (state.restRemaining <= 0) { stopRestTimer(); hideRestTimer(); renderSetDots(); updateDoneButton(); notifyRestDone(); }
   }, 1000);
+}
+
+function notifyRestDone() {
+  // Vibration (mobile)
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+  // Short beep via Web Audio API
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch (e) {}
 }
 
 function stopRestTimer() {
