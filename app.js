@@ -54,7 +54,7 @@ function goTo(screen) {
 async function signInWithGoogle() {
   const { error } = await db.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo: "https://gymjam90.netlify.app" },
+    options: { redirectTo: "https://gymjam.pages.dev" },
   });
   if (error) alert("שגיאה בהתחברות: " + error.message);
 }
