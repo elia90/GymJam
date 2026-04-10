@@ -1159,30 +1159,6 @@ function renderChallengeXP() {
   if (label) label.textContent = `${xp} XP`;
 }
 
-async function openLeaderboard() {
-  goTo("leaderboard");
-  const list = $("#leaderboard-list");
-  list.innerHTML = `<div class="history-loading">טוען...</div>`;
-  const data = await loadLeaderboard();
-  const myId = currentUser?.id;
-
-  list.innerHTML = "";
-  data.forEach((row, i) => {
-    const medals = ["🥇","🥈","🥉"];
-    const el = document.createElement("div");
-    el.className = "leaderboard-row" + (row.user_id === myId ? " me" : "");
-    el.innerHTML = `
-      <span class="lb-rank">${medals[i] || `#${i+1}`}</span>
-      <div class="lb-info">
-        <div class="lb-name">${row.display_name}</div>
-        <div class="lb-meta">רמה ${row.level} · ${row.days_completed} ימים · 🔥${row.streak}</div>
-      </div>
-      <span class="lb-xp">${row.xp} XP</span>
-    `;
-    list.appendChild(el);
-  });
-}
-
 // ── ADMIN SCREEN ──────────────────────────────────
 async function openAdmin() {
   if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
@@ -1258,7 +1234,33 @@ async function openAdmin() {
       <div class="admin-section-title">משתמשים (${data.total_users})</div>
       ${usersHTML || '<div class="history-empty">אין נתונים</div>'}
     </div>
+
+    <div class="admin-section" id="admin-leaderboard-section">
+      <div class="admin-section-title">לוח מובילים 🏅</div>
+      <div id="admin-leaderboard-list"><div class="history-loading">טוען...</div></div>
+    </div>
   `;
+
+  // Load leaderboard into admin panel
+  loadLeaderboard().then(lbData => {
+    const lbEl = $("#admin-leaderboard-list");
+    if (!lbEl) return;
+    if (!lbData || !lbData.length) {
+      lbEl.innerHTML = `<div class="history-empty">אין נתונים</div>`;
+      return;
+    }
+    const medals = ["🥇","🥈","🥉"];
+    lbEl.innerHTML = lbData.map((row, i) => `
+      <div class="leaderboard-row">
+        <span class="lb-rank">${medals[i] || `#${i+1}`}</span>
+        <div class="lb-info">
+          <div class="lb-name">${row.display_name}</div>
+          <div class="lb-meta">${row.email || ""} · רמה ${row.level} · ${row.days_completed} ימים · 🔥${row.streak}</div>
+        </div>
+        <span class="lb-xp">${row.xp} XP</span>
+      </div>
+    `).join("");
+  });
 }
 
 function buildAdminChart(dailyData) {
