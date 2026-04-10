@@ -76,8 +76,8 @@ function renderUserInfo(user) {
     : `<span class="user-name">${name}</span>`;
 
   // Show admin button only for admin user
-  const adminBtn = $("#admin-btn");
-  if (adminBtn) adminBtn.style.display = user.email === ADMIN_EMAIL ? "flex" : "none";
+  const display = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? "flex" : "none";
+  document.querySelectorAll(".admin-btn").forEach(btn => btn.style.display = display);
 }
 
 // ── DAILY TIP ──────────────────────────────────────
@@ -837,10 +837,9 @@ async function openChallenge() {
 
 function renderChallengeMap() {
   renderChallengeXP();
-  const adminBtn = $("#admin-btn");
-  if (adminBtn && currentUser) {
-    const isAdmin = currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-    adminBtn.style.display = isAdmin ? "flex" : "none";
+  if (currentUser) {
+    const display = currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? "flex" : "none";
+    document.querySelectorAll(".admin-btn").forEach(btn => btn.style.display = display);
   }
   const completed = getChallengeCompleted();
   const total = CHALLENGE_DAYS.length;
