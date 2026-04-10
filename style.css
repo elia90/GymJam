@@ -290,8 +290,10 @@
 }
 
 .challenge-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.5);
   padding: 16px 20px 12px;
   flex-shrink: 0;
   z-index: 10;
@@ -301,6 +303,8 @@
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  background: url('Background.png') center top / cover no-repeat;
+  background-attachment: local;
 }
 
 .challenge-header-top {
@@ -372,16 +376,18 @@
   width: 60px;
   height: 60px;
   border-radius: 14px;
-  border: 2px solid var(--border);
+  border: 2px solid rgba(255,255,255,.4);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
   transition: transform .15s, box-shadow .15s;
-  box-shadow: 0 3px 8px rgba(0,0,0,.12);
+  box-shadow: 0 3px 10px rgba(0,0,0,.18);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .challenge-node.done {

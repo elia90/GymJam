@@ -934,9 +934,9 @@ function renderChallengeMap() {
     wrap.style.cssText = `position:absolute;left:${pos.x}px;top:${pos.y}px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px;width:68px`;
 
     const cardColors = {
-      push: "#e8d5f5", pull: "#d5e8f5", legs: "#d5f5e3",
-      abs: "#fdf3d5", arms: "#fde8d5", core: "#f5d5d5",
-      default: "#e4e8ee"
+      push: "rgba(200,160,240,.75)", pull: "rgba(160,200,240,.75)", legs: "rgba(160,230,190,.75)",
+      abs: "rgba(240,220,140,.75)", arms: "rgba(240,190,140,.75)", core: "rgba(240,160,160,.75)",
+      default: "rgba(210,218,230,.75)"
     };
     const muscleKey = day.muscles.includes("גב") ? "pull"
       : day.muscles.includes("רגל") || day.muscles.includes("ישבן") ? "legs"
@@ -949,7 +949,7 @@ function renderChallengeMap() {
     const isBoss = BOSS_DAYS.has(day.day);
     const btn = document.createElement("button");
     btn.className = "challenge-node" + (isDone ? " done" : isNext ? " next" : isLocked ? " locked" : "") + (isBoss ? " boss" : "");
-    btn.style.background = isBoss && !isLocked ? "#fff3cd" : bgColor;
+    btn.style.background = isBoss && !isLocked ? "rgba(245,210,100,.8)" : bgColor;
 
     if (isLocked) {
       btn.innerHTML = `
