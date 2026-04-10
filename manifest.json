@@ -1,0 +1,26 @@
+{
+  "name": "GymJam — אתגר 50 ימים",
+  "short_name": "GymJam",
+  "description": "אתגר כושר גמיפייד ל-50 יום",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0f2f5",
+  "theme_color": "#4682b4",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "GymJamLogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "GymJamLogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
