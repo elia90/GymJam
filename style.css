@@ -1006,6 +1006,24 @@ body {
   line-height: 1.5;
 }
 
+/* ===== MUSCLE TIP ===== */
+.challenge-day-tip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-right: 4px solid #f5a623;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  margin-top: 8px;
+  width: 100%;
+}
+.challenge-day-tip:empty { display: none; }
+.muscle-tip-icon { font-size: 1.8rem; flex-shrink: 0; }
+.muscle-tip-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+
 /* ===== TIPS CARD ===== */
 .tip-card {
   background: rgba(70,130,180,.08);

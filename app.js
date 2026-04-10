@@ -80,6 +80,89 @@ function renderUserInfo(user) {
   document.querySelectorAll(".admin-btn").forEach(btn => btn.style.display = display);
 }
 
+// ── MUSCLE TIPS ────────────────────────────────────
+const MUSCLE_TIPS = {
+  "גב": [
+    { icon: "🔙", text: "שמור על גב ישר לאורך כל התרגיל — עמוד שדרה נייטרלי מונע פציעות ומגייס יותר שרירים." },
+    { icon: "🤏", text: "דמיין שאתה מנסה להחזיק עיפרון בין השכמות — זה עוזר לגייס את שרירי הגב האמצעי." },
+    { icon: "💪", text: "בתרגילי משיכה — התחל מהמרפקים, לא מהידיים. זה מוריד עומס מהאמות ומגייס יותר גב." },
+  ],
+  "חזה": [
+    { icon: "📐", text: "זווית המרפקים בלחיצת חזה צריכה להיות 45° מהגוף — לא 90°. שומר על כתפיים בריאות." },
+    { icon: "🫁", text: "נשום פנימה בירידה, החוצה בעלייה — לחץ בטן תקין מייצב את הגוף ומגביר כוח." },
+    { icon: "🔄", text: "בסיום כל סט תרגיש מתח (stretch) בחזה — אם לא מרגיש, עמוד הגוף שלך לא אופטימלי." },
+  ],
+  "כתפיים": [
+    { icon: "🔁", text: "שרירי הכתף קטנים יחסית — העמס פחות ועשה יותר חזרות לבניית יציבות." },
+    { icon: "⚠️", text: "אל תגביה כתפיים בתרגילי כתפיים — שמור אותן נמוכות ורחוקות מהאוזניים." },
+    { icon: "🌀", text: "כלול תרגילי רוטציה חיצונית — הם מגנים על מפרק הכתף ומונעים פציעות נפוצות." },
+  ],
+  "רגל": [
+    { icon: "🦵", text: "בסקוואט — ברכיים בכיוון הבהונות, לא פנימה. זה שומר על המפרקים ומגייס יותר ישבן." },
+    { icon: "⬇️", text: "ירידה איטית (3 שניות) בתרגילי רגליים שורפת יותר שרירים מירידה מהירה." },
+    { icon: "👣", text: "בלאנג׳ — שמור על 90° בשתי הברכיים ואל תתן לברך הקדמית לעבור את הבוהן." },
+  ],
+  "ישבן": [
+    { icon: "🍑", text: "הדחק את הישבן בחוזקה בחלק העליון של כל חזרה — זה כפיל את ההפעלה." },
+    { icon: "🔢", text: "שרירי הישבן מגיבים טוב לנפח גבוה — אל תפחד להגדיל סטים כשזה קל." },
+    { icon: "💤", text: "שרירי הישבן זקוקים ל-48 שעות התאוששות — אל תאמן אותם ביום עוקב." },
+  ],
+  "בטן": [
+    { icon: "🧱", text: "בטן חזקה מתחיל בנשימה נכונה — לחץ את הטבור פנימה ולמעלה בכל חזרה." },
+    { icon: "🔃", text: "קרנצ׳ רגיל מפעיל רק 60% מהבטן — שלב תרגילי פלאנק ורוטציה לכיסוי מלא." },
+    { icon: "⏱️", text: "פלאנק של 30 שניות עם טכניקה נכונה עדיף על דקה עם גב שקוע — איכות על פני כמות." },
+  ],
+  "ליבה": [
+    { icon: "🏗️", text: "הליבה היא הבסיס לכל תרגיל — ליבה חזקה משפרת ביצועים בכל שאר התרגילים." },
+    { icon: "🌬️", text: "נשום החוצה בחלק הקשה של התרגיל ולחץ את הבטן — זה מייצב את עמוד השדרה." },
+    { icon: "🔄", text: "שלב תרגילי ליבה אנטי-רוטציה (פאלוף פרס) — הם מגנים על הגב התחתון." },
+  ],
+  "יד": [
+    { icon: "💪", text: "אמות מתאוששות מהר — אפשר לאמן אותן 3-4 פעמים בשבוע." },
+    { icon: "🤲", text: "לאחיזה חזקה יותר — סחוט את המוט בחוזקה בכל חזרה, גם בתרגילי גב." },
+    { icon: "📏", text: "בתרגיל ביצפס — שמור מרפקים קבועים לצד הגוף. תנועת מרפק = גניבה." },
+  ],
+  "ביצפס": [
+    { icon: "🔒", text: "מרפקים קבועים = ביצפס מבודד. ברגע שהמרפקים זזים קדימה, הגב עושה את העבודה." },
+    { icon: "⬇️", text: "ירידה איטית ומבוקרת (2-3 שניות) בביצפס מכפילה את הצמיחה לעומת ירידה מהירה." },
+    { icon: "🔄", text: "שנה אחיזות — אחיזה צרה מגייסת יותר ראש ארוך, רחבה יותר ראש קצר." },
+  ],
+  "טריצפס": [
+    { icon: "📐", text: "טריצפס מהווה 2/3 מנפח הזרוע — אם רוצה זרועות גדולות, תתמקד בטריצפס." },
+    { icon: "🔒", text: "שמור מרפקים צמודים לראש בתרגילי overhead — זה מבודד את הטריצפס כראוי." },
+    { icon: "🏁", text: "כיפוף מלא בתחתית = stretch מלא = יותר סיבי שריר מגויסים בכל חזרה." },
+  ],
+};
+
+function getMuscleKey(muscles) {
+  if (!muscles) return null;
+  const m = muscles;
+  if (m.includes("גב")) return "גב";
+  if (m.includes("חזה")) return "חזה";
+  if (m.includes("כתפיים")) return "כתפיים";
+  if (m.includes("רגל")) return "רגל";
+  if (m.includes("ישבן")) return "ישבן";
+  if (m.includes("בטן")) return "בטן";
+  if (m.includes("ליבה")) return "ליבה";
+  if (m.includes("טריצפס")) return "טריצפס";
+  if (m.includes("ביצפס")) return "ביצפס";
+  if (m.includes("יד")) return "יד";
+  return null;
+}
+
+function renderMuscleTip(muscles, dayNumber) {
+  const el = $("#challenge-day-tip");
+  if (!el) return;
+  const key = getMuscleKey(muscles);
+  if (!key || !MUSCLE_TIPS[key]) { el.innerHTML = ""; return; }
+  const tips = MUSCLE_TIPS[key];
+  const tip = tips[dayNumber % tips.length];
+  el.innerHTML = `
+    <div class="muscle-tip-icon">${tip.icon}</div>
+    <div class="muscle-tip-text"><strong>טיפ — ${key}</strong><br>${tip.text}</div>
+  `;
+}
+
 // ── DAILY TIP ──────────────────────────────────────
 const DAILY_TIPS = [
   { icon: "💧", text: "שתה לפחות 2 ליטר מים היום — התייבשות מפחיתה כוח ב-10%." },
@@ -1007,6 +1090,7 @@ function openChallengeDay(dayNumber) {
   $("#challenge-day-emoji").textContent = day.emoji;
   $("#challenge-day-name").textContent = day.name;
   $("#challenge-day-muscles").textContent = `שרירים: ${day.muscles}`;
+  renderMuscleTip(day.muscles, dayNumber);
   $("#challenge-day-details").innerHTML = `
     <div class="cday-detail"><span>סטים</span><strong>${day.sets}</strong></div>
     <div class="cday-detail"><span>חזרות</span><strong>${day.reps}</strong></div>
