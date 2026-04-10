@@ -129,8 +129,7 @@ async function afterLogin() {
 }
 
 // ── ONBOARDING ─────────────────────────────────────
-const _onboardingSelections = { level: null, days: null, duration: null, goal: null };
-const _selectedMuscles = new Set();
+const _onboardingSelections = { level: null, goal: null };
 
 function selectOpt(group, value) {
   _onboardingSelections[group] = value;
@@ -140,20 +139,8 @@ function selectOpt(group, value) {
     btn.classList.toggle("selected", btn.dataset.value === value);
   });
 
-  const allSelected = _onboardingSelections.level && _onboardingSelections.days &&
-                      _onboardingSelections.duration && _onboardingSelections.goal;
+  const allSelected = _onboardingSelections.level && _onboardingSelections.goal;
   document.getElementById("onboarding-submit").disabled = !allSelected;
-}
-
-function toggleMuscle(btn) {
-  const muscle = btn.dataset.muscle;
-  if (_selectedMuscles.has(muscle)) {
-    _selectedMuscles.delete(muscle);
-    btn.classList.remove("selected");
-  } else {
-    _selectedMuscles.add(muscle);
-    btn.classList.add("selected");
-  }
 }
 
 async function submitOnboarding() {
@@ -162,11 +149,8 @@ async function submitOnboarding() {
   btn.textContent = "שומר...";
 
   await saveUserProfile({
-    fitness_level:    _onboardingSelections.level,
-    days_per_week:    parseInt(_onboardingSelections.days),
-    workout_duration: parseInt(_onboardingSelections.duration),
-    goal:             _onboardingSelections.goal,
-    target_muscles:   [..._selectedMuscles],
+    fitness_level: _onboardingSelections.level,
+    goal:          _onboardingSelections.goal,
   });
 
   await loadChallengeProgress();
