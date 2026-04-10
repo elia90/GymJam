@@ -927,13 +927,41 @@ function renderChallengeMap() {
     const wrap = document.createElement("div");
     wrap.style.cssText = `position:absolute;left:${pos.x}px;top:${pos.y}px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px;width:68px`;
 
+    const cardColors = {
+      push: "#e8d5f5", pull: "#d5e8f5", legs: "#d5f5e3",
+      abs: "#fdf3d5", arms: "#fde8d5", core: "#f5d5d5",
+      default: "#e4e8ee"
+    };
+    const muscleKey = day.muscles.includes("גב") ? "pull"
+      : day.muscles.includes("רגל") || day.muscles.includes("ישבן") ? "legs"
+      : day.muscles.includes("בטן") || day.muscles.includes("ליבה") ? "abs"
+      : day.muscles.includes("יד") || day.muscles.includes("ביצפס") || day.muscles.includes("טריצפס") ? "arms"
+      : day.muscles.includes("חזה") || day.muscles.includes("כתפיים") ? "push"
+      : "default";
+    const bgColor = cardColors[muscleKey];
+
     const btn = document.createElement("button");
     btn.className = "challenge-node" + (isDone ? " done" : isNext ? " next" : isLocked ? " locked" : "");
-    btn.innerHTML = isDone
-      ? `<span class="node-check">✓</span>`
-      : isLocked
-      ? `<span class="node-lock">🔒</span><span class="node-num">${day.day}</span>`
-      : `<span class="node-emoji">${day.emoji}</span><span class="node-num">${day.day}</span>`;
+    btn.style.background = bgColor;
+
+    if (isLocked) {
+      btn.innerHTML = `
+        <span class="node-emoji-bg">${day.emoji}</span>
+        <div class="node-lock-overlay">🔒</div>
+        <span class="node-num-abs">${day.day}</span>
+      `;
+    } else if (isDone) {
+      btn.innerHTML = `
+        <span class="node-emoji-bg">${day.emoji}</span>
+        <div class="node-done-overlay">✓</div>
+        <span class="node-num-abs">${day.day}</span>
+      `;
+    } else {
+      btn.innerHTML = `
+        <span class="node-emoji-bg">${day.emoji}</span>
+        <span class="node-num-abs">${day.day}</span>
+      `;
+    }
 
     if (!isLocked) btn.onclick = () => openChallengeDay(day.day);
     wrap.appendChild(btn);
