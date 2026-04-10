@@ -1231,13 +1231,21 @@ async function openAdmin() {
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">משתמשים (${data.total_users})</div>
-      ${usersHTML || '<div class="history-empty">אין נתונים</div>'}
+      <div class="admin-section-title admin-collapsible" onclick="toggleAdminSection(this)">
+        <span>משתמשים (${data.total_users})</span><span class="admin-chevron">▶</span>
+      </div>
+      <div class="admin-collapsible-body" style="display:none">
+        ${usersHTML || '<div class="history-empty">אין נתונים</div>'}
+      </div>
     </div>
 
     <div class="admin-section" id="admin-leaderboard-section">
-      <div class="admin-section-title">לוח מובילים 🏅</div>
-      <div id="admin-leaderboard-list"><div class="history-loading">טוען...</div></div>
+      <div class="admin-section-title admin-collapsible" onclick="toggleAdminSection(this)">
+        <span>לוח מובילים 🏅</span><span class="admin-chevron">▶</span>
+      </div>
+      <div class="admin-collapsible-body" style="display:none">
+        <div id="admin-leaderboard-list"><div class="history-loading">טוען...</div></div>
+      </div>
     </div>
   `;
 
@@ -1261,6 +1269,14 @@ async function openAdmin() {
       </div>
     `).join("");
   });
+}
+
+function toggleAdminSection(titleEl) {
+  const body = titleEl.nextElementSibling;
+  const chevron = titleEl.querySelector(".admin-chevron");
+  const isOpen = body.style.display !== "none";
+  body.style.display = isOpen ? "none" : "block";
+  chevron.textContent = isOpen ? "▶" : "▼";
 }
 
 function buildAdminChart(dailyData) {

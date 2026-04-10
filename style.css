@@ -701,6 +701,16 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+.admin-collapsible {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0;
+  padding: 4px 0;
+}
+.admin-collapsible-body { margin-top: 12px; }
 
 .admin-row {
   display: flex;
