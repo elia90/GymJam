@@ -949,10 +949,10 @@ function renderChallengeMap() {
   });
 
   // Scroll to bottom so day 1 is visible
-  setTimeout(() => {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
     const screen = $("#screen-challenge");
     if (screen) screen.scrollTop = screen.scrollHeight;
-  }, 150);
+  }));
 }
 
 function openChallengeDay(dayNumber) {
