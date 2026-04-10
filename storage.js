@@ -163,11 +163,61 @@ async function loadChallengeProgress() {
 
 function getChallengeCompleted() { return _challengeCompleted; }
 
+const XP_LEVELS = [0, 200, 500, 1000, 2000, Infinity];
+const LEVEL_NAMES = ["", "מתחיל", "לוחם", "גיבור", "אלוף", "אגדה"];
+const BOSS_DAYS = new Set([7, 14, 21, 28, 35, 42, 49, 50]);
+
 async function completeChallengDay(dayNumber) {
   if (!_userId) return;
   _challengeCompleted.add(dayNumber);
-  await db.from("challenge_progress").upsert({ user_id: _userId, day_number: dayNumber }, { onConflict: "user_id,day_number" });
+  await db.from("challenge_progress").upsert(
+    { user_id: _userId, day_number: dayNumber },
+    { onConflict: "user_id,day_number" }
+  );
+
+  // XP
+  const isBoss  = BOSS_DAYS.has(dayNumber);
+  const baseXP  = isBoss ? 100 : 50;
+  const profile = _userProfile || {};
+  const today   = new Date().toISOString().slice(0, 10);
+  const lastDate = profile.last_completed_date;
+
+  // Streak logic
+  let streak = profile.streak || 0;
+  if (lastDate) {
+    const diff = Math.floor((new Date(today) - new Date(lastDate)) / 86400000);
+    if (diff <= 2) streak++;
+    else streak = 1;
+  } else {
+    streak = 1;
+  }
+
+  // Streak bonus every 7 days
+  const streakBonus = (streak % 7 === 0) ? 10 : 0;
+  const earnedXP = baseXP + streakBonus;
+  const newXP = (profile.xp || 0) + earnedXP;
+
+  // Level
+  let newLevel = 1;
+  for (let i = XP_LEVELS.length - 2; i >= 0; i--) {
+    if (newXP >= XP_LEVELS[i]) { newLevel = i + 1; break; }
+  }
+
+  const updates = { xp: newXP, level: newLevel, streak, last_completed_date: today };
+  await db.from("user_profile").update(updates).eq("user_id", _userId);
+  _userProfile = { ..._userProfile, ...updates };
+
+  return { earnedXP, streakBonus, newXP, newLevel, streak, leveledUp: newLevel > (profile.level || 1) };
 }
+
+async function loadLeaderboard() {
+  const { data } = await db.rpc("get_leaderboard");
+  return data || [];
+}
+
+function getXPForLevel(level) { return XP_LEVELS[level - 1] || 0; }
+function getXPForNextLevel(level) { return XP_LEVELS[level] || XP_LEVELS[XP_LEVELS.length - 2]; }
+function getLevelName(level) { return LEVEL_NAMES[level] || "אגדה"; }
 
 // ── Internal ───────────────────────────────────────
 async function _upsertProgress(exerciseId, p) {

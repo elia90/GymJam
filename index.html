@@ -95,7 +95,15 @@
         <div class="challenge-progress-bar"><div class="challenge-progress-fill" id="challenge-progress-fill"></div></div>
         <div class="challenge-progress-label" id="challenge-progress-label">0 / 50</div>
       </div>
-      <div class="challenge-streak" id="challenge-streak"></div>
+      <div class="challenge-meta-row">
+        <div class="challenge-streak" id="challenge-streak"></div>
+        <div class="challenge-xp-row">
+          <span class="challenge-level-badge" id="challenge-level-badge">רמה 1</span>
+          <div class="challenge-xp-bar"><div class="challenge-xp-fill" id="challenge-xp-fill"></div></div>
+          <span class="challenge-xp-label" id="challenge-xp-label">0 XP</span>
+        </div>
+        <button class="history-btn" onclick="openLeaderboard()">🏅 מובילים</button>
+      </div>
     </div>
     <div class="challenge-map" id="challenge-map"></div>
   </div>
@@ -133,6 +141,30 @@
       <button class="btn-primary" id="cday-set-btn" onclick="doneChallengeSet()">סיימתי סט ✓</button>
       <button class="btn-primary" id="challenge-complete-btn" onclick="completeChallengeDay()" style="display:none">סיימתי את האימון! ✅</button>
       <div class="challenge-done-label" id="challenge-done-label" style="display:none">✅ הושלם</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       LEADERBOARD SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-leaderboard" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="goTo('challenge')">←</button>
+      <div class="header-title">לוח מובילים 🏅</div>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       XP CELEBRATION MODAL
+  ══════════════════════════════════════ -->
+  <div id="xp-modal" class="pr-modal" onclick="closeXPModal()">
+    <div class="pr-modal-box" onclick="event.stopPropagation()">
+      <div class="pr-modal-emoji" id="xp-modal-emoji">⭐</div>
+      <div class="pr-modal-title" id="xp-modal-title">+50 XP!</div>
+      <div class="pr-modal-sub" id="xp-modal-sub"></div>
+      <button class="btn-primary" onclick="closeXPModal()" style="margin-top:8px">המשך 💪</button>
     </div>
   </div>
 

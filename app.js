@@ -835,6 +835,7 @@ async function openChallenge() {
 }
 
 function renderChallengeMap() {
+  renderChallengeXP();
   const completed = getChallengeCompleted();
   const total = CHALLENGE_DAYS.length;
   const doneCount = completed.size;
@@ -940,9 +941,10 @@ function renderChallengeMap() {
       : "default";
     const bgColor = cardColors[muscleKey];
 
+    const isBoss = BOSS_DAYS.has(day.day);
     const btn = document.createElement("button");
-    btn.className = "challenge-node" + (isDone ? " done" : isNext ? " next" : isLocked ? " locked" : "");
-    btn.style.background = bgColor;
+    btn.className = "challenge-node" + (isDone ? " done" : isNext ? " next" : isLocked ? " locked" : "") + (isBoss ? " boss" : "");
+    btn.style.background = isBoss && !isLocked ? "#fff3cd" : bgColor;
 
     if (isLocked) {
       btn.innerHTML = `
@@ -1100,16 +1102,80 @@ function skipChallengeRest() {
 
 async function completeChallengeDay() {
   if (!_currentChallengeDay) return;
-  await completeChallengDay(_currentChallengeDay);
+  const result = await completeChallengDay(_currentChallengeDay);
 
   $("#challenge-complete-btn").style.display = "none";
   $("#challenge-done-label").style.display = "block";
 
-  // Go back to map after short delay
-  setTimeout(() => {
-    renderChallengeMap();
-    goTo("challenge");
-  }, 1200);
+  if (result) showXPModal(result, _currentChallengeDay);
+  else {
+    setTimeout(() => { renderChallengeMap(); goTo("challenge"); }, 1200);
+  }
+}
+
+function showXPModal(result, dayNumber) {
+  const isBoss = BOSS_DAYS.has(dayNumber);
+  const modal  = $("#xp-modal");
+  const level   = result.newLevel;
+
+  $("#xp-modal-emoji").textContent = isBoss ? "👑" : result.leveledUp ? "🎉" : "⭐";
+  $("#xp-modal-title").textContent = `+${result.earnedXP} XP!`;
+
+  let sub = `סה"כ: ${result.newXP} XP · רמה ${level} — ${getLevelName(level)}`;
+  if (result.streakBonus) sub += `\n🔥 בונוס streak: +${result.streakBonus} XP`;
+  if (result.leveledUp) sub += `\n⬆ עלית לרמה ${level}!`;
+  if (isBoss) sub = `👑 Boss Fight הושלם!\n` + sub;
+  $("#xp-modal-sub").textContent = sub;
+
+  modal.style.display = "flex";
+}
+
+function closeXPModal() {
+  $("#xp-modal").style.display = "none";
+  renderChallengeMap();
+  renderChallengeXP();
+  goTo("challenge");
+}
+
+function renderChallengeXP() {
+  const profile = getUserProfile();
+  if (!profile) return;
+  const xp    = profile.xp    || 0;
+  const level = profile.level || 1;
+  const xpCur = getXPForLevel(level);
+  const xpNxt = getXPForNextLevel(level);
+  const pct   = xpNxt === Infinity ? 100 : Math.round((xp - xpCur) / (xpNxt - xpCur) * 100);
+
+  const badge = $("#challenge-level-badge");
+  const fill  = $("#challenge-xp-fill");
+  const label = $("#challenge-xp-label");
+  if (badge) badge.textContent = `רמה ${level} — ${getLevelName(level)}`;
+  if (fill)  fill.style.width = pct + "%";
+  if (label) label.textContent = `${xp} XP`;
+}
+
+async function openLeaderboard() {
+  goTo("leaderboard");
+  const list = $("#leaderboard-list");
+  list.innerHTML = `<div class="history-loading">טוען...</div>`;
+  const data = await loadLeaderboard();
+  const myId = currentUser?.id;
+
+  list.innerHTML = "";
+  data.forEach((row, i) => {
+    const medals = ["🥇","🥈","🥉"];
+    const el = document.createElement("div");
+    el.className = "leaderboard-row" + (row.user_id === myId ? " me" : "");
+    el.innerHTML = `
+      <span class="lb-rank">${medals[i] || `#${i+1}`}</span>
+      <div class="lb-info">
+        <div class="lb-name">${row.display_name}</div>
+        <div class="lb-meta">רמה ${row.level} · ${row.days_completed} ימים · 🔥${row.streak}</div>
+      </div>
+      <span class="lb-xp">${row.xp} XP</span>
+    `;
+    list.appendChild(el);
+  });
 }
 
 // ── ADMIN SCREEN ──────────────────────────────────
