@@ -836,6 +836,8 @@ async function openChallenge() {
 
 function renderChallengeMap() {
   renderChallengeXP();
+  const adminBtn = $("#admin-btn");
+  if (adminBtn && currentUser) adminBtn.style.display = currentUser.email === ADMIN_EMAIL ? "flex" : "none";
   const completed = getChallengeCompleted();
   const total = CHALLENGE_DAYS.length;
   const doneCount = completed.size;
