@@ -303,7 +303,7 @@
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: url('Background.png') center top / cover no-repeat;
+  background: url('Background.png') center top / 100% auto no-repeat;
   background-attachment: local;
 }
 
