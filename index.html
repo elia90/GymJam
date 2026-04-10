@@ -147,6 +147,25 @@
         </div>
       </div>
 
+      <div class="onboarding-section">
+        <div class="onboarding-q">מה טווח הגיל שלך?</div>
+        <div class="onboarding-options row" id="opt-age">
+          <button class="onboarding-opt" data-value="18-30" onclick="selectOpt('age','18-30')">18–30<span>צעיר</span></button>
+          <button class="onboarding-opt" data-value="31-45" onclick="selectOpt('age','31-45')">31–45<span>בוגר</span></button>
+          <button class="onboarding-opt" data-value="46-60" onclick="selectOpt('age','46-60')">46–60<span>מנוסה</span></button>
+          <button class="onboarding-opt" data-value="61-80" onclick="selectOpt('age','61-80')">61–80<span>ותיק</span></button>
+        </div>
+      </div>
+
+      <div class="onboarding-section">
+        <div class="onboarding-q">מה המגדר שלך?</div>
+        <div class="onboarding-options row" id="opt-gender">
+          <button class="onboarding-opt" data-value="male"   onclick="selectOpt('gender','male')">זכר</button>
+          <button class="onboarding-opt" data-value="female" onclick="selectOpt('gender','female')">נקבה</button>
+          <button class="onboarding-opt" data-value="other"  onclick="selectOpt('gender','other')">אחר</button>
+        </div>
+      </div>
+
       <button class="btn-primary" id="onboarding-submit" onclick="submitOnboarding()" disabled>יאללה נתחיל! 🚀</button>
     </div>
   </div>

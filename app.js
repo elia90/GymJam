@@ -129,7 +129,7 @@ async function afterLogin() {
 }
 
 // ── ONBOARDING ─────────────────────────────────────
-const _onboardingSelections = { level: null, goal: null };
+const _onboardingSelections = { level: null, goal: null, age: null, gender: null };
 
 function selectOpt(group, value) {
   _onboardingSelections[group] = value;
@@ -139,7 +139,8 @@ function selectOpt(group, value) {
     btn.classList.toggle("selected", btn.dataset.value === value);
   });
 
-  const allSelected = _onboardingSelections.level && _onboardingSelections.goal;
+  const allSelected = _onboardingSelections.level && _onboardingSelections.goal &&
+                      _onboardingSelections.age   && _onboardingSelections.gender;
   document.getElementById("onboarding-submit").disabled = !allSelected;
 }
 
@@ -151,6 +152,8 @@ async function submitOnboarding() {
   await saveUserProfile({
     fitness_level: _onboardingSelections.level,
     goal:          _onboardingSelections.goal,
+    age_range:     _onboardingSelections.age,
+    gender:        _onboardingSelections.gender,
   });
 
   await loadChallengeProgress();
