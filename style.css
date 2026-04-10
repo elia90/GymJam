@@ -44,7 +44,11 @@
   margin: 0 auto;
 }
 
-.onboarding-logo { font-size: 3rem; }
+.onboarding-logo-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
 
 .onboarding-title {
   font-size: 1.6rem;
