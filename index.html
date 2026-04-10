@@ -89,7 +89,10 @@
     <div class="challenge-header">
       <div class="challenge-header-top">
         <div class="challenge-title">אתגר 50 ימים 🏆</div>
-        <button class="signout-btn" onclick="signOut()">יציאה</button>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="admin-btn" id="admin-btn" onclick="openAdmin()" style="display:none">⚙️</button>
+          <button class="signout-btn" onclick="signOut()">יציאה</button>
+        </div>
       </div>
       <div class="challenge-progress-row">
         <div class="challenge-progress-bar"><div class="challenge-progress-fill" id="challenge-progress-fill"></div></div>
