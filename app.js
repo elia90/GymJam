@@ -122,8 +122,9 @@ async function afterLogin() {
   if (!profile || !profile.onboarding_completed) {
     goTo("onboarding");
   } else {
-    await renderHome();
-    goTo("home");
+    await loadChallengeProgress();
+    renderChallengeMap();
+    goTo("challenge");
   }
 }
 
@@ -168,8 +169,9 @@ async function submitOnboarding() {
     target_muscles:   [..._selectedMuscles],
   });
 
-  await renderHome();
-  goTo("home");
+  await loadChallengeProgress();
+  renderChallengeMap();
+  goTo("challenge");
 }
 
 // ── HOME SCREEN ────────────────────────────────────
@@ -834,6 +836,127 @@ async function openPRs() {
       `;
       list.appendChild(card);
     });
+}
+
+// ── CHALLENGE MAP ─────────────────────────────────
+let _currentChallengeDay = null;
+
+async function openChallenge() {
+  goTo("challenge");
+  await loadChallengeProgress();
+  renderChallengeMap();
+}
+
+function renderChallengeMap() {
+  const completed = getChallengeCompleted();
+  const total = CHALLENGE_DAYS.length;
+  const doneCount = completed.size;
+
+  // Header
+  $("#challenge-progress-fill").style.width = (doneCount / total * 100) + "%";
+  $("#challenge-progress-label").textContent = `${doneCount} / ${total}`;
+
+  // Streak
+  let streak = 0;
+  for (let i = doneCount; i >= 1; i--) {
+    if (completed.has(i)) streak++;
+    else break;
+  }
+  const streakEl = $("#challenge-streak");
+  streakEl.textContent = streak >= 2 ? `🔥 ${streak} ימים רצופים` : "";
+
+  // Map
+  const map = $("#challenge-map");
+  map.innerHTML = "";
+
+  let currentWeek = 0;
+
+  CHALLENGE_DAYS.forEach((day, idx) => {
+    // Week label
+    if (day.week !== currentWeek) {
+      currentWeek = day.week;
+      const weekEl = document.createElement("div");
+      weekEl.className = "challenge-week-label";
+      const weekNames = ["","שבוע 1 — כוח בסיסי","שבוע 2 — טבעות","שבוע 3 — כוח מתפרץ","שבוע 4 — כבלים","שבוע 5 — ספסל ומשענות","שבוע 6 — שיווי משקל","שבוע 7 — אתגר גמר 🏆"];
+      weekEl.textContent = weekNames[day.week] || `שבוע ${day.week}`;
+      map.appendChild(weekEl);
+    }
+
+    const isDone    = completed.has(day.day);
+    const isNext    = day.day === doneCount + 1;
+    const isLocked  = day.day > doneCount + 1;
+
+    const node = document.createElement("div");
+    node.className = "challenge-row" + (idx % 2 === 0 ? " row-rtl" : "");
+
+    const btn = document.createElement("button");
+    btn.className = "challenge-node" + (isDone ? " done" : isNext ? " next" : isLocked ? " locked" : "");
+    btn.innerHTML = isDone
+      ? `<span class="node-check">✓</span><span class="node-day">${day.day}</span>`
+      : isLocked
+      ? `<span class="node-lock">🔒</span>`
+      : `<span class="node-emoji">${day.emoji}</span><span class="node-day">${day.day}</span>`;
+
+    if (!isLocked) {
+      btn.onclick = () => openChallengeDay(day.day);
+    }
+
+    const label = document.createElement("div");
+    label.className = "challenge-node-label";
+    label.textContent = isLocked ? "" : day.name;
+
+    node.appendChild(btn);
+    node.appendChild(label);
+    map.appendChild(node);
+  });
+}
+
+function openChallengeDay(dayNumber) {
+  const day = CHALLENGE_DAYS.find(d => d.day === dayNumber);
+  if (!day) return;
+  _currentChallengeDay = dayNumber;
+
+  const completed = getChallengeCompleted();
+  const isDone = completed.has(dayNumber);
+
+  $("#challenge-day-title").textContent = `יום ${dayNumber}`;
+  $("#challenge-day-emoji").textContent = day.emoji;
+  $("#challenge-day-name").textContent = day.name;
+  $("#challenge-day-muscles").textContent = `שרירים: ${day.muscles}`;
+  $("#challenge-day-details").innerHTML = `
+    <div class="cday-detail"><span>סטים</span><strong>${day.sets}</strong></div>
+    <div class="cday-detail"><span>חזרות</span><strong>${day.reps}</strong></div>
+    <div class="cday-detail"><span>מנוחה</span><strong>${day.rest}s</strong></div>
+  `;
+
+  const videoUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(day.videoSearch)}`;
+  $("#challenge-video-link").href = videoUrl;
+
+  const completeBtn = $("#challenge-complete-btn");
+  const doneLabel   = $("#challenge-done-label");
+  if (isDone) {
+    completeBtn.style.display = "none";
+    doneLabel.style.display = "block";
+  } else {
+    completeBtn.style.display = "block";
+    doneLabel.style.display = "none";
+  }
+
+  goTo("challenge-day");
+}
+
+async function completeChallengeDay() {
+  if (!_currentChallengeDay) return;
+  await completeChallengDay(_currentChallengeDay);
+
+  $("#challenge-complete-btn").style.display = "none";
+  $("#challenge-done-label").style.display = "block";
+
+  // Go back to map after short delay
+  setTimeout(() => {
+    renderChallengeMap();
+    goTo("challenge");
+  }, 1200);
 }
 
 // ── ADMIN SCREEN ──────────────────────────────────

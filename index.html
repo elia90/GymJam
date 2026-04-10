@@ -83,6 +83,44 @@
   </div>
 
   <!-- ══════════════════════════════════════
+       CHALLENGE MAP SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-challenge" class="screen">
+    <div class="challenge-header">
+      <div class="challenge-header-top">
+        <div class="challenge-title">אתגר 50 ימים 🏆</div>
+        <button class="signout-btn" onclick="signOut()">יציאה</button>
+      </div>
+      <div class="challenge-progress-row">
+        <div class="challenge-progress-bar"><div class="challenge-progress-fill" id="challenge-progress-fill"></div></div>
+        <div class="challenge-progress-label" id="challenge-progress-label">0 / 50</div>
+      </div>
+      <div class="challenge-streak" id="challenge-streak"></div>
+    </div>
+    <div class="challenge-map" id="challenge-map"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CHALLENGE DAY SCREEN
+  ══════════════════════════════════════ -->
+  <div id="screen-challenge-day" class="screen">
+    <div class="header">
+      <button class="header-back" onclick="goTo('challenge')">←</button>
+      <div class="header-title" id="challenge-day-title">יום 1</div>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="challenge-day-body">
+      <div class="challenge-day-emoji" id="challenge-day-emoji"></div>
+      <div class="challenge-day-name" id="challenge-day-name"></div>
+      <div class="challenge-day-muscles" id="challenge-day-muscles"></div>
+      <div class="challenge-day-details" id="challenge-day-details"></div>
+      <a class="instructions-video-link" id="challenge-video-link" href="#" target="_blank" rel="noopener">▶ צפה בהדגמת וידאו</a>
+      <button class="btn-primary" id="challenge-complete-btn" onclick="completeChallengeDay()">סיימתי את האימון! ✅</button>
+      <div class="challenge-done-label" id="challenge-done-label" style="display:none">✅ הושלם</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
        ONBOARDING SCREEN
   ══════════════════════════════════════ -->
   <div id="screen-onboarding" class="screen">
@@ -134,8 +172,7 @@
           <button class="muscle-tag" data-muscle="chest"     onclick="toggleMuscle(this)">חזה</button>
           <button class="muscle-tag" data-muscle="back"      onclick="toggleMuscle(this)">גב</button>
           <button class="muscle-tag" data-muscle="shoulders" onclick="toggleMuscle(this)">כתפיים</button>
-          <button class="muscle-tag" data-muscle="triceps"   onclick="toggleMuscle(this)">טריצפס</button>
-          <button class="muscle-tag" data-muscle="biceps"    onclick="toggleMuscle(this)">ביצפס</button>
+          <button class="muscle-tag" data-muscle="arms"      onclick="toggleMuscle(this)">ידיים</button>
           <button class="muscle-tag" data-muscle="abs"       onclick="toggleMuscle(this)">בטן</button>
           <button class="muscle-tag" data-muscle="legs"      onclick="toggleMuscle(this)">רגליים</button>
           <button class="muscle-tag" data-muscle="glutes"    onclick="toggleMuscle(this)">ישבן</button>

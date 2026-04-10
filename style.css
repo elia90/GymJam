@@ -268,6 +268,210 @@
 }
 .admin-btn:hover { opacity: 1; }
 
+/* ===== CHALLENGE MAP ===== */
+.challenge-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.challenge-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.challenge-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.challenge-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.challenge-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.challenge-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.challenge-progress-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.challenge-streak {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e05c5c;
+  margin-top: 6px;
+  min-height: 18px;
+}
+
+.challenge-map {
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.challenge-week-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 20px 0 8px;
+  padding: 0 8px;
+}
+
+.challenge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0;
+  justify-content: flex-end;
+}
+
+.challenge-row.row-rtl {
+  justify-content: flex-start;
+}
+
+.challenge-node {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform .15s, box-shadow .15s;
+  position: relative;
+}
+
+.challenge-node.done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.challenge-node.next {
+  background: var(--surface);
+  border-color: var(--accent);
+  border-width: 3px;
+  box-shadow: 0 0 0 4px rgba(70,130,180,.2);
+  animation: pulse-node 1.8s ease-in-out infinite;
+}
+
+.challenge-node.locked {
+  background: var(--surface2);
+  border-color: var(--border);
+  cursor: default;
+  opacity: 0.6;
+}
+
+@keyframes pulse-node {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(70,130,180,.2); }
+  50%       { box-shadow: 0 0 0 8px rgba(70,130,180,.1); }
+}
+
+.challenge-node:not(.locked):hover { transform: scale(1.08); }
+
+.node-check { font-size: 1.3rem; color: white; }
+.node-emoji { font-size: 1.4rem; }
+.node-lock  { font-size: 1.1rem; }
+.node-day   { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); line-height: 1; }
+.challenge-node.done .node-day { color: rgba(255,255,255,.8); }
+.challenge-node.next .node-day { color: var(--accent); }
+
+.challenge-node-label {
+  font-size: 0.78rem;
+  color: var(--text);
+  font-weight: 500;
+  flex: 1;
+  line-height: 1.3;
+}
+
+/* ===== CHALLENGE DAY SCREEN ===== */
+.challenge-day-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 40px;
+  gap: 14px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.challenge-day-emoji { font-size: 4rem; }
+
+.challenge-day-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+}
+
+.challenge-day-muscles {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--surface2);
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+
+.challenge-day-details {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+}
+
+.cday-detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.cday-detail span { font-size: 0.75rem; color: var(--text-muted); }
+.cday-detail strong { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+
+.challenge-done-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--legs);
+  padding: 14px 0;
+}
+
 /* ===== ADMIN SCREEN ===== */
 .admin-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
 

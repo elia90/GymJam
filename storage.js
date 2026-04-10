@@ -152,6 +152,23 @@ function getUserProfile() {
   return _userProfile;
 }
 
+// ── Challenge Progress ─────────────────────────────
+let _challengeCompleted = new Set();
+
+async function loadChallengeProgress() {
+  if (!_userId) return;
+  const { data } = await db.from("challenge_progress").select("day_number").eq("user_id", _userId);
+  _challengeCompleted = new Set((data || []).map(r => r.day_number));
+}
+
+function getChallengeCompleted() { return _challengeCompleted; }
+
+async function completeChallengDay(dayNumber) {
+  if (!_userId) return;
+  _challengeCompleted.add(dayNumber);
+  await db.from("challenge_progress").upsert({ user_id: _userId, day_number: dayNumber }, { onConflict: "user_id,day_number" });
+}
+
 // ── Internal ───────────────────────────────────────
 async function _upsertProgress(exerciseId, p) {
   if (!_userId) return;

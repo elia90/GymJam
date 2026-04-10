@@ -538,3 +538,66 @@ const WARMUPS = {
     ],
   },
 };
+
+/* =====================================================
+   CHALLENGE — 50-day calisthenics path
+   ===================================================== */
+const CHALLENGE_DAYS = [
+  // ── שבוע 1: כוח בסיסי ──────────────────────────
+  { day: 1,  week: 1, name: "מתח באחיזה רחבה",             muscles: "גב",                   sets: 3, reps: "מקסימום", rest: 90,  emoji: "🏋️", videoSearch: "wide grip pull up" },
+  { day: 2,  week: 1, name: "מקבילים — Dips",              muscles: "חזה, טריצפס",           sets: 3, reps: 10,        rest: 90,  emoji: "💪", videoSearch: "parallel bar dips" },
+  { day: 3,  week: 1, name: "סקוואט עמוק",                 muscles: "רגליים",                sets: 4, reps: 15,        rest: 60,  emoji: "🦵", videoSearch: "deep squat calisthenics" },
+  { day: 4,  week: 1, name: "שכיבות סמיכה יהלום",          muscles: "טריצפס, חזה פנימי",     sets: 3, reps: 12,        rest: 75,  emoji: "💎", videoSearch: "diamond push up" },
+  { day: 5,  week: 1, name: "הרמת ברכיים לחזה בתלייה",    muscles: "בטן",                   sets: 3, reps: 15,        rest: 60,  emoji: "🔥", videoSearch: "hanging knee raise" },
+  { day: 6,  week: 1, name: "לאנג'ים בהליכה",             muscles: "רגליים, ישבן",          sets: 3, reps: "12 לכל רגל", rest: 60, emoji: "🚶", videoSearch: "walking lunges" },
+  { day: 7,  week: 1, name: "Dead Hang — אחיזה סטטית",    muscles: "אמות, אחיזה",           sets: 3, reps: "מקסימום זמן", rest: 90, emoji: "⏱️", videoSearch: "dead hang bar" },
+  // ── שבוע 2: טבעות ──────────────────────────────
+  { day: 8,  week: 2, name: "שכיבות סמיכה על טבעות",      muscles: "חזה, כתפיים",           sets: 3, reps: 10,        rest: 90,  emoji: "🤸", videoSearch: "ring push up" },
+  { day: 9,  week: 2, name: "חתירה בטבעות",               muscles: "גב עליון",              sets: 3, reps: 12,        rest: 75,  emoji: "🏊", videoSearch: "ring row" },
+  { day: 10, week: 2, name: "סקוואט בולגרי בטבעות",       muscles: "רגליים",                sets: 3, reps: "10 לכל רגל", rest: 75, emoji: "🦵", videoSearch: "bulgarian split squat rings" },
+  { day: 11, week: 2, name: "פלאנק על הטבעות",            muscles: "ליבה",                  sets: 3, reps: "30 שניות", rest: 60,  emoji: "⚡", videoSearch: "ring plank" },
+  { day: 12, week: 2, name: "כפיפות המסטרינג בטבעות",     muscles: "ירך אחורית",            sets: 3, reps: 10,        rest: 75,  emoji: "🦵", videoSearch: "ring hamstring curl" },
+  { day: 13, week: 2, name: "פשיטות מרפקים בטבעות",       muscles: "טריצפס",                sets: 3, reps: 12,        rest: 75,  emoji: "💪", videoSearch: "ring tricep extension" },
+  { day: 14, week: 2, name: "כפיפות ידיים בטבעות",        muscles: "ביצפס",                 sets: 3, reps: 12,        rest: 75,  emoji: "💪", videoSearch: "ring bicep curl" },
+  // ── שבוע 3: כוח מתפרץ ──────────────────────────
+  { day: 15, week: 3, name: "טיפוס על חבל",               muscles: "גב, אמות",              sets: 3, reps: "עד הקצה", rest: 120, emoji: "🧗", videoSearch: "rope climb calisthenics" },
+  { day: 16, week: 3, name: "Monkey Bars — מעבר אופקי",   muscles: "גב, אמות",              sets: 3, reps: "מצד לצד", rest: 90,  emoji: "🐒", videoSearch: "monkey bars traversal" },
+  { day: 17, week: 3, name: "Chin-ups — אחיזה צרה הפוכה", muscles: "ביצפס, גב",             sets: 3, reps: "מקסימום", rest: 90,  emoji: "🏋️", videoSearch: "chin up underhand grip" },
+  { day: 18, week: 3, name: "שכיבות סמיכה מתפרצות",       muscles: "חזה, כתפיים",           sets: 4, reps: 10,        rest: 75,  emoji: "💥", videoSearch: "explosive push up" },
+  { day: 19, week: 3, name: "Jump Squats",                 muscles: "רגליים, כוח מתפרץ",     sets: 4, reps: 12,        rest: 60,  emoji: "🚀", videoSearch: "jump squat" },
+  { day: 20, week: 3, name: "טיפוס חבל שלילי",            muscles: "גב, אמות",              sets: 3, reps: "3 ירידות", rest: 120, emoji: "🧗", videoSearch: "rope climb negative" },
+  { day: 21, week: 3, name: "L-Sit סטטי על מקבילים",      muscles: "בטן, ירך קדמית",        sets: 3, reps: "מקסימום זמן", rest: 90, emoji: "✋", videoSearch: "L-sit parallel bars" },
+  // ── שבוע 4: כבלים ──────────────────────────────
+  { day: 22, week: 4, name: "לחיצת חזה בכבלים",           muscles: "חזה",                   sets: 3, reps: 15,        rest: 60,  emoji: "🔗", videoSearch: "cable chest press" },
+  { day: 23, week: 4, name: "Rear Delt Fly בכבלים",       muscles: "כתפיים אחוריות",        sets: 3, reps: 15,        rest: 60,  emoji: "🦅", videoSearch: "cable rear delt fly" },
+  { day: 24, week: 4, name: "חתירה ביד אחת בכבלים",       muscles: "גב, ליבה",              sets: 3, reps: "12 לכל יד", rest: 60, emoji: "💪", videoSearch: "single arm cable row" },
+  { day: 25, week: 4, name: "Woodchopper בכבלים",         muscles: "בטן אלכסונית",          sets: 3, reps: "12 לכל צד", rest: 60, emoji: "🪓", videoSearch: "cable woodchopper" },
+  { day: 26, week: 4, name: "Pistol Squat בתמיכת כבלים",  muscles: "רגליים, שיווי משקל",    sets: 3, reps: "8 לכל רגל", rest: 75, emoji: "🎯", videoSearch: "pistol squat cable assist" },
+  { day: 27, week: 4, name: "Y-Raise בכבלים",             muscles: "כתפיים, גב עליון",      sets: 3, reps: 15,        rest: 60,  emoji: "🅈",  videoSearch: "cable Y raise" },
+  { day: 28, week: 4, name: "מתיחת יד אחורית בכבלים",     muscles: "טריצפס",                sets: 3, reps: "12 לכל יד", rest: 60, emoji: "💪", videoSearch: "cable overhead tricep extension" },
+  // ── שבוע 5: ספסל ומשענות ───────────────────────
+  { day: 29, week: 5, name: "הרמת רגליים ישרות במשענת",   muscles: "בטן תחתונה",            sets: 3, reps: 15,        rest: 60,  emoji: "🔥", videoSearch: "captain chair leg raise straight" },
+  { day: 30, week: 5, name: "Sit-ups בשיפוע שלילי",       muscles: "בטן",                   sets: 3, reps: 15,        rest: 60,  emoji: "💪", videoSearch: "decline sit up" },
+  { day: 31, week: 5, name: "שכיבות סמיכה בשיפוע שלילי",  muscles: "חזה עליון, כתפיים",     sets: 3, reps: 12,        rest: 75,  emoji: "📐", videoSearch: "decline push up" },
+  { day: 32, week: 5, name: "Step-ups על הספסל",          muscles: "רגליים, ישבן",          sets: 3, reps: "12 לכל רגל", rest: 60, emoji: "🪜", videoSearch: "bench step up" },
+  { day: 33, week: 5, name: "Bench Dips",                  muscles: "טריצפס, חזה",           sets: 3, reps: 15,        rest: 60,  emoji: "🪑", videoSearch: "bench dips tricep" },
+  { day: 34, week: 5, name: "הרמת רגליים הצידה במשענת",   muscles: "אלכסונים",              sets: 3, reps: "15 לכל צד", rest: 60, emoji: "↔️", videoSearch: "captain chair side leg raise" },
+  { day: 35, week: 5, name: "שכיבות סמיכה רחבות מקבילים", muscles: "חזה, כתפיים",           sets: 3, reps: 12,        rest: 75,  emoji: "🤲", videoSearch: "wide push up parallel bars" },
+  // ── שבוע 6: שיווי משקל ─────────────────────────
+  { day: 36, week: 6, name: "שיווי משקל רגל אחת",         muscles: "רגליים, יציבות",        sets: 3, reps: "60 שניות לכל רגל", rest: 45, emoji: "🧘", videoSearch: "single leg balance" },
+  { day: 37, week: 6, name: "Lateral Jumps מעל פלטפורמות", muscles: "רגליים, קואורדינציה",  sets: 4, reps: 20,        rest: 60,  emoji: "↔️", videoSearch: "lateral jump platform" },
+  { day: 38, week: 6, name: "שכיבות סמיכה על קצות אצבעות", muscles: "אמות, חזה",            sets: 3, reps: 10,        rest: 75,  emoji: "☝️", videoSearch: "fingertip push up" },
+  { day: 39, week: 6, name: "לאנג'ים סטטיים על פלטפורמה", muscles: "רגליים, ישבן",          sets: 3, reps: "12 לכל רגל", rest: 60, emoji: "🦵", videoSearch: "elevated lunge" },
+  { day: 40, week: 6, name: "דחיפות כוח מתפרצות",         muscles: "חזה, כתפיים",           sets: 4, reps: 10,        rest: 75,  emoji: "💥", videoSearch: "explosive push up wall" },
+  { day: 41, week: 6, name: "פלאנק דינמי בין פלטפורמות",  muscles: "ליבה, כתפיים",          sets: 3, reps: "45 שניות", rest: 60,  emoji: "⚡", videoSearch: "dynamic plank" },
+  { day: 42, week: 6, name: "מתח אחיזה משתנה",            muscles: "גב, ביצפס",             sets: 3, reps: "מקסימום", rest: 90,  emoji: "🏋️", videoSearch: "mixed grip pull up" },
+  // ── שבוע 7: אתגר גמר ───────────────────────────
+  { day: 43, week: 7, name: "מתח + ברכיים לחזה",          muscles: "גב, בטן",               sets: 3, reps: 8,         rest: 90,  emoji: "🔥", videoSearch: "pull up knee raise" },
+  { day: 44, week: 7, name: "Pike Push-up",                muscles: "כתפיים, טריצפס",        sets: 3, reps: 12,        rest: 75,  emoji: "🔺", videoSearch: "pike push up" },
+  { day: 45, week: 7, name: "Nordic Curl",                 muscles: "ירך אחורית",            sets: 3, reps: 6,         rest: 90,  emoji: "🦵", videoSearch: "nordic hamstring curl" },
+  { day: 46, week: 7, name: "Tuck Planche Hold",           muscles: "כתפיים, ליבה",          sets: 3, reps: "מקסימום זמן", rest: 90, emoji: "✈️", videoSearch: "tuck planche hold" },
+  { day: 47, week: 7, name: "Box Jump",                    muscles: "רגליים, כוח מתפרץ",     sets: 4, reps: 8,         rest: 75,  emoji: "📦", videoSearch: "box jump" },
+  { day: 48, week: 7, name: "Archer Push-up",              muscles: "חזה, כתפיים, יד",       sets: 3, reps: "8 לכל צד", rest: 90, emoji: "🏹", videoSearch: "archer push up" },
+  { day: 49, week: 7, name: "Muscle-up ניסיון",           muscles: "גב, חזה, טריצפס",       sets: 3, reps: "מקסימום", rest: 120, emoji: "👑", videoSearch: "muscle up tutorial" },
+  { day: 50, week: 7, name: "Full Challenge — כל הגוף",   muscles: "כל הגוף",               sets: 1, reps: "מעגל שלם", rest: 60, emoji: "🏆", videoSearch: "calisthenics full body circuit" },
+];
