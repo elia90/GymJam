@@ -837,7 +837,10 @@ async function openChallenge() {
 function renderChallengeMap() {
   renderChallengeXP();
   const adminBtn = $("#admin-btn");
-  if (adminBtn && currentUser) adminBtn.style.display = currentUser.email === ADMIN_EMAIL ? "flex" : "none";
+  if (adminBtn && currentUser) {
+    const isAdmin = currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    adminBtn.style.display = isAdmin ? "flex" : "none";
+  }
   const completed = getChallengeCompleted();
   const total = CHALLENGE_DAYS.length;
   const doneCount = completed.size;
@@ -982,8 +985,8 @@ function renderChallengeMap() {
 
   // Scroll to top so day 1 is visible
   requestAnimationFrame(() => {
-    const screen = $("#screen-challenge");
-    if (screen) screen.scrollTop = 0;
+    const scroller = document.querySelector(".challenge-map-scroll");
+    if (scroller) scroller.scrollTop = 0;
   });
 }
 

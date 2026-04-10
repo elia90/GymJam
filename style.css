@@ -283,13 +283,24 @@
 .admin-btn:hover { opacity: 1; }
 
 /* ===== CHALLENGE MAP ===== */
+#screen-challenge {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .challenge-header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 16px 20px 12px;
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 10;
+}
+
+.challenge-map-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .challenge-header-top {
