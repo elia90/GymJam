@@ -1191,12 +1191,42 @@ async function openAdmin() {
     return;
   }
 
-  const workoutNames = { push: "יום A — דחיפה", pull: "יום B — משיכה", "legs-core": "יום C — רגליים" };
-  const byType = (data.workouts_by_type || []).map(t =>
-    `<div class="admin-row"><span>${workoutNames[t.workout_id] || t.workout_id}</span><strong>${t.total}</strong></div>`
-  ).join("");
-
   const activityBars = buildAdminChart(data.daily_activity || []);
+
+  const levelNames = ["","מתחיל","לוחם","גיבור","אלוף","אגדה"];
+  const goalNames  = { mass:"מסה", tone:"חיטוב", both:"שניהם" };
+  const levelMap   = { beginner:"מתחיל", intermediate:"בינוני", advanced:"מתקדם" };
+  const genderMap  = { male:"זכר", female:"נקבה", other:"אחר" };
+
+  const usersHTML = (data.users_detail || []).map(u => {
+    const joined    = u.joined_at    ? new Date(u.joined_at).toLocaleDateString("he-IL")    : "—";
+    const lastLogin = u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString("he-IL") : "—";
+    const lastWorkout = u.last_workout  ? new Date(u.last_workout).toLocaleDateString("he-IL")    : "—";
+    const onboarded = u.onboarding_completed ? "✅" : "❌";
+
+    return `
+      <div class="admin-user-card">
+        <div class="admin-user-header">
+          <div class="admin-user-name">${u.display_name}</div>
+          <div class="admin-user-email">${u.email}</div>
+        </div>
+        <div class="admin-user-grid">
+          <div class="admin-user-stat"><span>הצטרף</span><strong>${joined}</strong></div>
+          <div class="admin-user-stat"><span>כניסה אחרונה</span><strong>${lastLogin}</strong></div>
+          <div class="admin-user-stat"><span>שאלון</span><strong>${onboarded}</strong></div>
+          <div class="admin-user-stat"><span>רמת כושר</span><strong>${levelMap[u.fitness_level] || "—"}</strong></div>
+          <div class="admin-user-stat"><span>מטרה</span><strong>${goalNames[u.goal] || "—"}</strong></div>
+          <div class="admin-user-stat"><span>גיל</span><strong>${u.age_range || "—"}</strong></div>
+          <div class="admin-user-stat"><span>מגדר</span><strong>${genderMap[u.gender] || "—"}</strong></div>
+          <div class="admin-user-stat"><span>XP</span><strong>${u.xp ?? 0}</strong></div>
+          <div class="admin-user-stat"><span>רמה</span><strong>${levelNames[u.level ?? 1] || "מתחיל"}</strong></div>
+          <div class="admin-user-stat"><span>Streak</span><strong>🔥${u.streak ?? 0}</strong></div>
+          <div class="admin-user-stat"><span>ימי אתגר</span><strong>${u.challenge_days ?? 0} / 50</strong></div>
+          <div class="admin-user-stat"><span>אימון אחרון</span><strong>${lastWorkout}</strong></div>
+        </div>
+      </div>
+    `;
+  }).join("");
 
   body.innerHTML = `
     <div class="admin-stats-grid">
@@ -1215,13 +1245,13 @@ async function openAdmin() {
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">אימונים לפי סוג</div>
-      ${byType || '<div class="history-empty">אין נתונים</div>'}
+      <div class="admin-section-title">פעילות 14 ימים אחרונים</div>
+      ${activityBars}
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">פעילות 14 ימים אחרונים</div>
-      ${activityBars}
+      <div class="admin-section-title">משתמשים (${data.total_users})</div>
+      ${usersHTML || '<div class="history-empty">אין נתונים</div>'}
     </div>
   `;
 }

@@ -704,6 +704,51 @@
 
 .admin-chart { overflow-x: auto; padding: 4px 0; }
 
+.admin-user-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--bg);
+}
+
+.admin-user-header { margin-bottom: 10px; }
+
+.admin-user-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.admin-user-email {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.admin-user-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.admin-user-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-user-stat span {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.admin-user-stat strong {
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
