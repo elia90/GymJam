@@ -983,10 +983,15 @@ function renderChallengeMap() {
   });
 }
 
+let _challengeRestTimer = null;
+let _challengeCurrentSet = 1;
+
 function openChallengeDay(dayNumber) {
   const day = CHALLENGE_DAYS.find(d => d.day === dayNumber);
   if (!day) return;
   _currentChallengeDay = dayNumber;
+  _challengeCurrentSet = 1;
+  stopChallengeRest();
 
   const completed = getChallengeCompleted();
   const isDone = completed.has(dayNumber);
@@ -1004,17 +1009,93 @@ function openChallengeDay(dayNumber) {
   const videoUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(day.videoSearch)}`;
   $("#challenge-video-link").href = videoUrl;
 
-  const completeBtn = $("#challenge-complete-btn");
-  const doneLabel   = $("#challenge-done-label");
   if (isDone) {
-    completeBtn.style.display = "none";
-    doneLabel.style.display = "block";
+    $("#cday-set-tracker").style.display = "none";
+    $("#cday-set-btn").style.display = "none";
+    $("#challenge-complete-btn").style.display = "none";
+    $("#challenge-done-label").style.display = "block";
   } else {
-    completeBtn.style.display = "block";
-    doneLabel.style.display = "none";
+    $("#cday-set-tracker").style.display = "flex";
+    $("#cday-set-btn").style.display = "block";
+    $("#challenge-complete-btn").style.display = "none";
+    $("#challenge-done-label").style.display = "none";
+    renderChallengeSetDots(day);
   }
 
   goTo("challenge-day");
+}
+
+function renderChallengeSetDots(day) {
+  const dots = $("#cday-set-dots");
+  if (!dots) return;
+  dots.innerHTML = "";
+  for (let i = 1; i <= day.sets; i++) {
+    const d = document.createElement("div");
+    d.className = "set-dot" + (i < _challengeCurrentSet ? " done" : i === _challengeCurrentSet ? " active" : "");
+    dots.appendChild(d);
+  }
+}
+
+function doneChallengeSet() {
+  const day = CHALLENGE_DAYS.find(d => d.day === _currentChallengeDay);
+  if (!day) return;
+
+  if (_challengeCurrentSet >= day.sets) {
+    // All sets done
+    stopChallengeRest();
+    $("#cday-rest").style.display = "none";
+    $("#cday-set-btn").style.display = "none";
+    $("#cday-set-tracker").style.display = "none";
+    $("#challenge-complete-btn").style.display = "block";
+    return;
+  }
+
+  _challengeCurrentSet++;
+  renderChallengeSetDots(day);
+  startChallengeRest(day.rest);
+}
+
+function startChallengeRest(seconds) {
+  stopChallengeRest();
+  let remaining = seconds;
+  const restEl  = $("#cday-rest");
+  const countEl = $("#cday-rest-count");
+  const fillEl  = $("#cday-rest-fill");
+  const setBtn  = $("#cday-set-btn");
+
+  restEl.style.display = "block";
+  setBtn.disabled = true;
+  setBtn.style.opacity = "0.4";
+
+  const update = () => {
+    countEl.textContent = remaining + "s";
+    fillEl.style.width = (remaining / seconds * 100) + "%";
+  };
+  update();
+
+  _challengeRestTimer = setInterval(() => {
+    remaining--;
+    update();
+    if (remaining <= 0) {
+      stopChallengeRest();
+      restEl.style.display = "none";
+      setBtn.disabled = false;
+      setBtn.style.opacity = "1";
+      notifyRestDone();
+    }
+  }, 1000);
+}
+
+function stopChallengeRest() {
+  if (_challengeRestTimer) { clearInterval(_challengeRestTimer); _challengeRestTimer = null; }
+}
+
+function skipChallengeRest() {
+  stopChallengeRest();
+  $("#cday-rest").style.display = "none";
+  const setBtn = $("#cday-set-btn");
+  setBtn.disabled = false;
+  setBtn.style.opacity = "1";
 }
 
 async function completeChallengeDay() {

@@ -499,6 +499,64 @@
 .cday-detail span { font-size: 0.75rem; color: var(--text-muted); }
 .cday-detail strong { font-size: 1.1rem; font-weight: 800; color: var(--text); }
 
+.cday-set-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.cday-set-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.cday-set-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.cday-rest {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cday-rest-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.cday-rest-count {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.cday-rest-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cday-rest-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.9s linear;
+}
+
 .challenge-done-label {
   font-size: 1.1rem;
   font-weight: 700;

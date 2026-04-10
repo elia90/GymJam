@@ -115,7 +115,23 @@
       <div class="challenge-day-muscles" id="challenge-day-muscles"></div>
       <div class="challenge-day-details" id="challenge-day-details"></div>
       <a class="instructions-video-link" id="challenge-video-link" href="#" target="_blank" rel="noopener">▶ צפה בהדגמת וידאו</a>
-      <button class="btn-primary" id="challenge-complete-btn" onclick="completeChallengeDay()">סיימתי את האימון! ✅</button>
+
+      <!-- Set tracker -->
+      <div class="cday-set-tracker" id="cday-set-tracker">
+        <div class="cday-set-title">סטים</div>
+        <div class="cday-set-dots" id="cday-set-dots"></div>
+      </div>
+
+      <!-- Rest timer -->
+      <div class="cday-rest" id="cday-rest" style="display:none">
+        <div class="cday-rest-label">⏳ מנוחה</div>
+        <div class="cday-rest-count" id="cday-rest-count">60s</div>
+        <div class="cday-rest-bar"><div class="cday-rest-fill" id="cday-rest-fill"></div></div>
+        <button class="rest-skip-btn" onclick="skipChallengeRest()">דלג על המנוחה</button>
+      </div>
+
+      <button class="btn-primary" id="cday-set-btn" onclick="doneChallengeSet()">סיימתי סט ✓</button>
+      <button class="btn-primary" id="challenge-complete-btn" onclick="completeChallengeDay()" style="display:none">סיימתי את האימון! ✅</button>
       <div class="challenge-done-label" id="challenge-done-label" style="display:none">✅ הושלם</div>
     </div>
   </div>
