@@ -62,6 +62,7 @@ async function signInWithGoogle() {
 }
 
 async function signOut() {
+  goTo("loading");
   await db.auth.signOut();
 }
 
