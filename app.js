@@ -864,10 +864,10 @@ function renderChallengeMap() {
     [0.88, 0.70, 0.50, 0.30, 0.12],
   ];
 
-  // day 1 at bottom → index 0 has highest y
+  // day 1 at top → index 0 has lowest y
   const positions = CHALLENGE_DAYS.map((day, i) => ({
     x: Math.round(containerW * xPatterns[Math.floor(i / 5) % 2][i % 5]),
-    y: TOTAL_H - (i + 1) * V_SPACING,
+    y: 40 + i * V_SPACING,
     day,
   }));
 
@@ -948,11 +948,11 @@ function renderChallengeMap() {
     map.appendChild(wrap);
   });
 
-  // Scroll to bottom so day 1 is visible
-  requestAnimationFrame(() => requestAnimationFrame(() => {
+  // Scroll to top so day 1 is visible
+  requestAnimationFrame(() => {
     const screen = $("#screen-challenge");
-    if (screen) screen.scrollTop = screen.scrollHeight;
-  }));
+    if (screen) screen.scrollTop = 0;
+  });
 }
 
 function openChallengeDay(dayNumber) {
