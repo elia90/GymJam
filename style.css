@@ -654,7 +654,7 @@
 }
 
 /* ===== ADMIN SCREEN ===== */
-.admin-body { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.admin-body { padding: 16px 16px 120px; display: flex; flex-direction: column; gap: 16px; }
 
 .admin-stats-grid {
   display: grid;
