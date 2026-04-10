@@ -843,59 +843,116 @@ function renderChallengeMap() {
   $("#challenge-progress-fill").style.width = (doneCount / total * 100) + "%";
   $("#challenge-progress-label").textContent = `${doneCount} / ${total}`;
 
-  // Streak
   let streak = 0;
   for (let i = doneCount; i >= 1; i--) {
     if (completed.has(i)) streak++;
     else break;
   }
-  const streakEl = $("#challenge-streak");
-  streakEl.textContent = streak >= 2 ? `🔥 ${streak} ימים רצופים` : "";
+  $("#challenge-streak").textContent = streak >= 2 ? `🔥 ${streak} ימים רצופים` : "";
 
-  // Map
   const map = $("#challenge-map");
   map.innerHTML = "";
 
-  let currentWeek = 0;
+  const containerW = Math.min(window.innerWidth - 32, 480);
+  const V_SPACING  = 100;
+  const NODE_R     = 28;
+  const TOTAL_H    = total * V_SPACING + 80;
 
-  CHALLENGE_DAYS.forEach((day, idx) => {
-    // Week label
-    if (day.week !== currentWeek) {
-      currentWeek = day.week;
-      const weekEl = document.createElement("div");
-      weekEl.className = "challenge-week-label";
-      const weekNames = ["","שבוע 1 — כוח בסיסי","שבוע 2 — טבעות","שבוע 3 — כוח מתפרץ","שבוע 4 — כבלים","שבוע 5 — ספסל ומשענות","שבוע 6 — שיווי משקל","שבוע 7 — אתגר גמר 🏆"];
-      weekEl.textContent = weekNames[day.week] || `שבוע ${day.week}`;
-      map.appendChild(weekEl);
+  // Winding x positions (fraction of containerW), groups of 5
+  const xPatterns = [
+    [0.12, 0.30, 0.50, 0.70, 0.88],
+    [0.88, 0.70, 0.50, 0.30, 0.12],
+  ];
+
+  // day 1 at bottom → index 0 has highest y
+  const positions = CHALLENGE_DAYS.map((day, i) => ({
+    x: Math.round(containerW * xPatterns[Math.floor(i / 5) % 2][i % 5]),
+    y: TOTAL_H - (i + 1) * V_SPACING,
+    day,
+  }));
+
+  map.style.cssText = `position:relative;height:${TOTAL_H}px;width:${containerW}px;margin:0 auto`;
+
+  // ── SVG path ───────────────────────────────────────
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("width", containerW);
+  svg.setAttribute("height", TOTAL_H);
+  svg.style.cssText = "position:absolute;top:0;left:0;pointer-events:none";
+
+  const buildPath = pts => pts.map((p, i) => {
+    const cy = p.y + NODE_R;
+    if (i === 0) return `M ${p.x} ${cy}`;
+    const prev = pts[i - 1];
+    const midY = (prev.y + NODE_R + cy) / 2;
+    return `C ${prev.x} ${midY} ${p.x} ${midY} ${p.x} ${cy}`;
+  }).join(" ");
+
+  const addPath = (d, color, w) => {
+    const el = document.createElementNS(NS, "path");
+    el.setAttribute("d", d);
+    el.setAttribute("fill", "none");
+    el.setAttribute("stroke", color);
+    el.setAttribute("stroke-width", w);
+    el.setAttribute("stroke-linecap", "round");
+    svg.appendChild(el);
+  };
+
+  addPath(buildPath(positions), "#dde2ea", 6);
+  if (doneCount > 0) addPath(buildPath(positions.slice(0, doneCount)), "var(--accent)", 6);
+  map.appendChild(svg);
+
+  // ── Week labels ────────────────────────────────────
+  const weekNames = ["","שבוע 1","שבוע 2","שבוע 3","שבוע 4","שבוע 5","שבוע 6","שבוע 7 🏆"];
+  let lastWeek = 0;
+  positions.forEach(pos => {
+    const w = pos.day.week;
+    if (w !== lastWeek) {
+      lastWeek = w;
+      const lbl = document.createElement("div");
+      lbl.className = "challenge-week-float";
+      lbl.textContent = weekNames[w] || `שבוע ${w}`;
+      lbl.style.cssText = `position:absolute;top:${pos.y - 26}px;left:0;right:0;text-align:center;pointer-events:none`;
+      map.appendChild(lbl);
     }
+  });
 
-    const isDone    = completed.has(day.day);
-    const isNext    = day.day === doneCount + 1;
-    const isLocked  = day.day > doneCount + 1;
+  // ── Nodes ──────────────────────────────────────────
+  positions.forEach(pos => {
+    const day    = pos.day;
+    const isDone = completed.has(day.day);
+    const isNext = day.day === doneCount + 1;
+    const isLocked = day.day > doneCount + 1;
 
-    const node = document.createElement("div");
-    node.className = "challenge-row" + (idx % 2 === 0 ? " row-rtl" : "");
+    const wrap = document.createElement("div");
+    wrap.style.cssText = `position:absolute;left:${pos.x}px;top:${pos.y}px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px;width:68px`;
 
     const btn = document.createElement("button");
     btn.className = "challenge-node" + (isDone ? " done" : isNext ? " next" : isLocked ? " locked" : "");
     btn.innerHTML = isDone
-      ? `<span class="node-check">✓</span><span class="node-day">${day.day}</span>`
+      ? `<span class="node-check">✓</span>`
       : isLocked
       ? `<span class="node-lock">🔒</span>`
-      : `<span class="node-emoji">${day.emoji}</span><span class="node-day">${day.day}</span>`;
+      : `<span class="node-emoji">${day.emoji}</span><span class="node-num">${day.day}</span>`;
+
+    if (!isLocked) btn.onclick = () => openChallengeDay(day.day);
+    wrap.appendChild(btn);
 
     if (!isLocked) {
-      btn.onclick = () => openChallengeDay(day.day);
+      const lbl = document.createElement("div");
+      lbl.className = "challenge-node-name";
+      lbl.textContent = day.name;
+      wrap.appendChild(lbl);
     }
 
-    const label = document.createElement("div");
-    label.className = "challenge-node-label";
-    label.textContent = isLocked ? "" : day.name;
-
-    node.appendChild(btn);
-    node.appendChild(label);
-    map.appendChild(node);
+    map.appendChild(wrap);
   });
+
+  // Scroll to bottom so day 1 is visible
+  setTimeout(() => {
+    const screen = $("#screen-challenge");
+    if (screen) screen.scrollTop = screen.scrollHeight;
+  }, 80);
 }
 
 function openChallengeDay(dayNumber) {
