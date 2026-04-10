@@ -105,6 +105,12 @@
   font-size: 1.1rem;
 }
 
+.onboarding-opt.age {
+  font-size: 0.9rem;
+  padding: 10px 6px;
+  min-width: 0;
+}
+
 .onboarding-opt span {
   font-size: 0.75rem;
   font-weight: 400;
