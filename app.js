@@ -932,7 +932,7 @@ function renderChallengeMap() {
     btn.innerHTML = isDone
       ? `<span class="node-check">✓</span>`
       : isLocked
-      ? `<span class="node-lock">🔒</span>`
+      ? `<span class="node-lock">🔒</span><span class="node-num">${day.day}</span>`
       : `<span class="node-emoji">${day.emoji}</span><span class="node-num">${day.day}</span>`;
 
     if (!isLocked) btn.onclick = () => openChallengeDay(day.day);
