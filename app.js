@@ -952,7 +952,7 @@ function renderChallengeMap() {
   setTimeout(() => {
     const screen = $("#screen-challenge");
     if (screen) screen.scrollTop = screen.scrollHeight;
-  }, 80);
+  }, 150);
 }
 
 function openChallengeDay(dayNumber) {

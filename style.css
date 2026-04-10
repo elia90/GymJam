@@ -618,7 +618,7 @@ body {
 .header-spacer { width: 40px; flex-shrink: 0; }
 
 /* ===== SCREEN ===== */
-.screen { display: none; flex-direction: column; flex: 1; }
+.screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; }
 .screen.active { display: flex; }
 
 /* ===== HOME SCREEN ===== */
